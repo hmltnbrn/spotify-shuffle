@@ -1,3 +1,11 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow
+ */
+
 import React, { Component } from 'react';
 import {
 	Alert,
@@ -15,11 +23,18 @@ import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 import { getAllPlaylists, searchPlaylists } from './actions';
 
-class PlaylistsScreen extends Component {
-	static navigationOptions = {
-		title: 'Playlists'
-	};
+type State = {
+  text: string,
+  focus: boolean
+}
 
+type Props = {
+  playlists: Array<any>,
+  getAllPlaylists: () => void,
+  searchPlaylists: (text: string) => void
+}
+
+class PlaylistsScreen extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,13 +45,6 @@ class PlaylistsScreen extends Component {
 
 	componentDidMount() {
     this.props.getAllPlaylists();
-    // Spotify.logout().finally(() => {
-		// 	this.goToInitialScreen();
-		// });
-	}
-
-  goToInitialScreen() {
-		this.props.navigation.navigate('initial');
 	}
 
   handleChange = (text) => {
