@@ -1,3 +1,8 @@
+/**
+ * @format
+ * @flow
+ */
+
 import React, { PureComponent } from 'react';
 import {
 	ActivityIndicator,
@@ -8,16 +13,22 @@ import {
 	View,
   Linking
 } from 'react-native';
+import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
 import Config from 'react-native-config';
 
-export default class SplashScreen extends PureComponent {
-	constructor(props) {
-		super(props);
-		this.state = {
-			spotifyInitialized: false
-		};
-	}
+type Props = {
+  navigation: NavigationScreenProp<NavigationState>
+};
+
+type State = {
+  spotifyInitialized: boolean
+};
+
+export default class SplashScreen extends PureComponent<Props, State> {
+  state = {
+    spotifyInitialized: false
+  };
 
 	goToPlaylists() {
 		this.props.navigation.navigate('Playlists');
@@ -85,6 +96,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		backgroundColor: '#F5FCFF',
 	},
+  loadIndicator: {},
 	loadMessage: {
 		fontSize: 20,
 		textAlign: 'center',

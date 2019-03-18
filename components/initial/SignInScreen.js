@@ -1,3 +1,8 @@
+/**
+ * @format
+ * @flow
+ */
+
 import React, { PureComponent } from 'react';
 import {
 	ActivityIndicator,
@@ -8,14 +13,17 @@ import {
 	View,
   Linking
 } from 'react-native';
+import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
+import { connect } from 'react-redux';
+import { setUserDetails } from './actions';
 
-export default class SignInScreen extends PureComponent {
-	constructor(props) {
-		super(props);
-		this.state = {
-		};
-	}
+type Props = {
+  navigation: NavigationScreenProp<NavigationState>,
+  setUserDetails: () => void
+};
+
+class SignInScreen extends PureComponent<Props> {
 
   goToPlaylists() {
 		this.props.navigation.navigate('Playlists');
@@ -24,6 +32,7 @@ export default class SignInScreen extends PureComponent {
   spotifyLoginButtonWasPressed = () => {
 		Spotify.login().then((loggedIn) => {
 			if(loggedIn) {
+        this.props.setUserDetails();
 				this.goToPlaylists();
 			}
 		}).catch((error) => {
@@ -44,6 +53,8 @@ export default class SignInScreen extends PureComponent {
     );
 	}
 }
+
+export default connect(null, { setUserDetails })(SignInScreen);
 
 const styles = StyleSheet.create({
 	container: {

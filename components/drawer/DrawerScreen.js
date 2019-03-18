@@ -1,11 +1,22 @@
-import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
-import { ScrollView, Text, View, StyleSheet, SafeAreaView } from 'react-native';
-import { DrawerActions } from 'react-navigation';
-import Spotify from 'rn-spotify-sdk';
+/**
+ * @format
+ * @flow
+ */
 
-class DrawerScreen extends Component {
-  navigateToScreen = (route) => () => {
+import React, { Component } from 'react';
+import { NavigationActions, DrawerActions, NavigationState, NavigationScreenProp } from 'react-navigation';
+import { ScrollView, Text, View, StyleSheet, SafeAreaView } from 'react-native';
+import Spotify from 'rn-spotify-sdk';
+import { connect } from 'react-redux';
+
+type Props = {
+  navigation: NavigationScreenProp<NavigationState>,
+  username: string
+};
+
+class DrawerScreen extends Component<Props> {
+
+  navigateToScreen = (route: string) => () => {
     const navigateAction = NavigationActions.navigate({
       routeName: route
     });
@@ -23,8 +34,13 @@ class DrawerScreen extends Component {
     return (
       <View>
         <ScrollView>
-          <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
+          <SafeAreaView style={styles.container}>
             <View>
+              <View style={styles.menuItem}>
+                <Text>
+                  {this.props.username}
+                </Text>
+              </View>
               <View style={styles.menuItem}>
                 <Text onPress={this.navigateToScreen('Playlists')}>
                   Playlists
@@ -43,6 +59,12 @@ class DrawerScreen extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  username: state.user.username
+});
+
+export default connect(mapStateToProps)(DrawerScreen);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -58,5 +80,3 @@ const styles = StyleSheet.create({
     borderColor: '#d6d7da'
   }
 });
-
-export default DrawerScreen;

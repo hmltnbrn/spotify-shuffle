@@ -1,7 +1,4 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
  * @format
  * @flow
  */
@@ -23,36 +20,21 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import SplashScreen from './components/initial/SplashScreen.js';
 import SignInScreen from './components/initial/SignInScreen.js';
-import PlaylistsScreen from './components/playlists/PlaylistsScreen.js';
 import DrawerScreen from './components/drawer/DrawerScreen.js';
+import PlaylistsScreen from './components/playlists/PlaylistsScreen.js';
 
-const MenuImage = ({navigation}) => {
-  if(!navigation.state.isDrawerOpen) {
-    return <Icon name="menu" size={25} color={"#ffffff"} />
-  } else {
-    return <Icon name="arrow-back" size={25} color={"#ffffff"} />
-  }
-};
-
-const DrawerStack = createDrawerNavigator({
-  Playlists: { screen: PlaylistsScreen },
+const DrawerAvailableStack = createStackNavigator({
+  Playlists: { screen: PlaylistsScreen }
+  /* any other route where you want the drawer to remain available */
 },{
   initialRouteName: 'Playlists',
-  contentComponent: DrawerScreen,
-  drawerWidth: 300
-});
-
-const DrawerNavigation = createStackNavigator({
-  drawerStack: { screen: DrawerStack }
-},{
   defaultNavigationOptions: ({ navigation }) => {
-    const { routeName } = navigation.state.routes[navigation.state.index];
     return {
       headerMode: 'screen',
-      headerTitle: routeName,
+      headerTitle: 'Drawer',
       headerLeft:
       <TouchableOpacity onPress={() => { navigation.dispatch(DrawerActions.toggleDrawer()) } }>
-        <MenuImage navigation={navigation}/>
+        <Icon name="menu" size={25} color={"#ffffff"} style={{paddingLeft: 15}}/>
       </TouchableOpacity>,
       headerStyle: {
         backgroundColor: '#1db954',
@@ -63,6 +45,23 @@ const DrawerNavigation = createStackNavigator({
       }
     };
   }
+});
+
+const DrawerNavigator = createDrawerNavigator({
+  DrawerAvailable: DrawerAvailableStack
+},{
+  initialRouteName: 'DrawerAvailable',
+  contentComponent: DrawerScreen,
+  drawerWidth: 300
+});
+
+const MainStack = createStackNavigator({
+  DrawerScreens: DrawerNavigator
+  /* add routes here where you want the drawer to be locked */
+}, {
+  defaultNavigationOptions: () => ({
+    header: null
+  })
 });
 
 const InitialStack = createStackNavigator({
@@ -76,12 +75,12 @@ const InitialStack = createStackNavigator({
 });
 
 const PrimaryNav = createSwitchNavigator({
-  initialStack: { screen: InitialStack },
-  drawerStack: { screen: DrawerNavigation }
+  InitialScreens: { screen: InitialStack },
+  MainScreens: { screen: MainStack }
 }, {
   title: 'Main',
   headerMode: 'none',
-  initialRouteName: 'initialStack'
+  initialRouteName: 'InitialScreens'
 });
 
 export default createAppContainer(PrimaryNav);

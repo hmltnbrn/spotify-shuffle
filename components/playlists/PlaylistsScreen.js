@@ -1,7 +1,4 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
  * @format
  * @flow
  */
@@ -16,32 +13,34 @@ import {
   Image,
   ScrollView,
   FlatList,
-  TextInput
+  TextInput,
+  StatusBar
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 import { getAllPlaylists, searchPlaylists } from './actions';
 
-type State = {
-  text: string,
-  focus: boolean
-}
-
 type Props = {
   playlists: Array<any>,
   getAllPlaylists: () => void,
   searchPlaylists: (text: string) => void
-}
+};
+
+type State = {
+  text: string,
+  focus: boolean
+};
 
 class PlaylistsScreen extends Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: '',
-      focus: false
-    };
-  }
+  static navigationOptions = {
+    headerTitle: 'Playlists',
+  };
+
+  state = {
+    text: '',
+    focus: false
+  };
 
 	componentDidMount() {
     this.props.getAllPlaylists();
@@ -61,6 +60,10 @@ class PlaylistsScreen extends Component<Props, State> {
     const newPlaylists = playlists.filter(playlist => playlist.images.length > 0);
     return (
       <View style={styles.container}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="#1db954"
+        />
         <View style={styles.searchBarContainer}>
           <View style={[styles.searchBar, ... this.state.focus ? [styles.searchBarFocus] : []]}>
             <Icon name="search" size={25} color={this.state.focus ? "#ffffff" : "#000000"} />
