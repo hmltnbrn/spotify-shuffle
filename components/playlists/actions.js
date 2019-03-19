@@ -4,6 +4,8 @@ import Spotify from 'rn-spotify-sdk';
 export const GET_PLAYLISTS = 'GET_PLAYLISTS';
 export const GET_PLAYLIST_TRACKS = 'GET_PLAYLIST_TRACKS';
 export const SEARCH_PLAYLISTS = 'SEARCH_PLAYLISTS';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_ERROR = 'SET_ERROR';
 
 export const getAllPlaylists = () => async dispatch => {
   try {
@@ -21,11 +23,12 @@ export const getAllPlaylists = () => async dispatch => {
   }
 }
 
-export const searchPlaylists = (query) => async dispatch => {
+export const getPlaylistTracks = (id) => async dispatch => {
   try {
+    let res = await Spotify.sendRequest(`v1/playlists/${id}/tracks`, "get", {}, false);
     dispatch({
-      type: SEARCH_PLAYLISTS,
-      payload: query
+      type: GET_PLAYLIST_TRACKS,
+      payload: res.items
     });
   } catch(err) {
     console.error(err)
@@ -34,4 +37,11 @@ export const searchPlaylists = (query) => async dispatch => {
     //   payload: err.response.data
     // });
   }
+}
+
+export const searchPlaylists = (query) => async dispatch => {
+  dispatch({
+    type: SEARCH_PLAYLISTS,
+    payload: query
+  });
 }

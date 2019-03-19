@@ -11,7 +11,8 @@ import {
 	Text,
 	TouchableHighlight,
 	View,
-  Linking
+  Image,
+  StatusBar
 } from 'react-native';
 import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
@@ -43,8 +44,16 @@ class SignInScreen extends PureComponent<Props> {
 	render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="#1db954"
+        />
+        <Image
+          style={{width: 150, height: 150}}
+          source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
+        />
         <Text style={styles.greeting}>
-          Hey! You! Log into your spotify
+          Welcome to this app. It is not affiliated with Spotify. Wink.
         </Text>
         <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
           <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
@@ -61,16 +70,17 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#F5FCFF',
+		backgroundColor: '#1db954',
+    padding: 20
 	},
 	spotifyLoginButton: {
 		justifyContent: 'center',
-		borderRadius: 18,
-		backgroundColor: 'green',
+		backgroundColor: '#191414',
 		overflow: 'hidden',
 		width: 200,
 		height: 40,
 		margin: 20,
+    elevation: 3
 	},
 	spotifyLoginButtonText: {
 		fontSize: 20,
@@ -78,8 +88,10 @@ const styles = StyleSheet.create({
 		color: 'white',
 	},
 	greeting: {
-		fontSize: 20,
+		fontSize: 30,
 		textAlign: 'center',
 		margin: 10,
+    color: '#ffffff',
+    marginVertical: 50
 	},
 });

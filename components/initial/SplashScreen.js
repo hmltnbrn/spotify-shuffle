@@ -16,16 +16,19 @@ import {
 import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
 import Config from 'react-native-config';
+import { connect } from 'react-redux';
+import { setUserDetails } from './actions';
 
 type Props = {
-  navigation: NavigationScreenProp<NavigationState>
+  navigation: NavigationScreenProp<NavigationState>,
+  setUserDetails: () => void
 };
 
 type State = {
   spotifyInitialized: boolean
 };
 
-export default class SplashScreen extends PureComponent<Props, State> {
+class SplashScreen extends PureComponent<Props, State> {
   state = {
     spotifyInitialized: false
   };
@@ -51,6 +54,7 @@ export default class SplashScreen extends PureComponent<Props, State> {
 				spotifyInitialized: true
 			});
 			if(loggedIn) {
+        this.props.setUserDetails();
 				this.goToPlaylists();
 			}
       else {
@@ -62,6 +66,7 @@ export default class SplashScreen extends PureComponent<Props, State> {
 				spotifyInitialized: true
 			});
 			if(await Spotify.isLoggedInAsync()) {
+        this.props.setUserDetails();
 				this.goToPlaylists();
 			}
       else {
@@ -79,27 +84,27 @@ export default class SplashScreen extends PureComponent<Props, State> {
 	render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator animating={true} style={styles.loadIndicator}>
-        </ActivityIndicator>
         <Text style={styles.loadMessage}>
-          Loading...
+          Not Real Spotify
         </Text>
       </View>
     );
 	}
 }
 
+export default connect(null, { setUserDetails })(SplashScreen);
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#F5FCFF',
+		backgroundColor: '#1db954',
 	},
-  loadIndicator: {},
 	loadMessage: {
-		fontSize: 20,
+		fontSize: 50,
 		textAlign: 'center',
 		margin: 10,
+    color: '#ffffff'
 	}
 });

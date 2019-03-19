@@ -5,17 +5,18 @@
 
 import React, { Component } from 'react';
 import {
-	Alert,
-	StyleSheet,
-	Text,
-	TouchableHighlight,
-	View,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
   Image,
   ScrollView,
   FlatList,
   TextInput,
   StatusBar
 } from 'react-native';
+import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
@@ -24,7 +25,8 @@ import { getAllPlaylists, searchPlaylists } from './actions';
 type Props = {
   playlists: Array<any>,
   getAllPlaylists: () => void,
-  searchPlaylists: (text: string) => void
+  searchPlaylists: (text: string) => void,
+  navigation: NavigationScreenProp<NavigationState>
 };
 
 type State = {
@@ -34,7 +36,7 @@ type State = {
 
 class PlaylistsScreen extends Component<Props, State> {
   static navigationOptions = {
-    headerTitle: 'Playlists',
+    headerTitle: 'Playlists'
   };
 
   state = {
@@ -52,6 +54,14 @@ class PlaylistsScreen extends Component<Props, State> {
 
   handleSubmit = () => {
     this.props.searchPlaylists(this.state.text);
+  }
+
+  goToTracks = (playlist) => {
+    console.log(playlist);
+    this.props.navigation.navigate('Tracks', {
+      playlistId: playlist.id,
+      playlistName: playlist.name,
+    });
   }
 
 	render() {
@@ -85,17 +95,19 @@ class PlaylistsScreen extends Component<Props, State> {
           data={newPlaylists}
           renderItem={({item}) => {
             return (
-              <View style={styles.playlistContainer}>
-                <Image
-                  style={styles.playlistImage}
-                  source={{uri: item.images[0].url}}
-                  resizeMode="contain"
-                />
-                <View style={styles.playlistImageOverlay}>
-                  <Text style={styles.playlistText}>{item.name}</Text>
-                  <Text style={{ color: 'white', margin: 6 }}>{`${item.tracks.total} ${item.tracks.total === 1 ? "Track" : "Tracks"}`}</Text>
+              <TouchableHighlight onPress={() => this.goToTracks(item)} underlayColor="#fafafa">
+                <View style={styles.playlistContainer}>
+                  <Image
+                    style={styles.playlistImage}
+                    source={{uri: item.images[0].url}}
+                    resizeMode="contain"
+                  />
+                  <View style={styles.playlistImageOverlay}>
+                    <Text style={styles.playlistText}>{item.name}</Text>
+                    <Text style={{ color: '#000000', margin: 6 }}>{`${item.tracks.total} ${item.tracks.total === 1 ? "Track" : "Tracks"}`}</Text>
+                  </View>
                 </View>
-              </View>
+              </TouchableHighlight>
             );
           }}
           keyExtractor={(item, index) => item.id}
@@ -152,32 +164,27 @@ const styles = StyleSheet.create({
     color: '#ffffff'
   },
   playlistContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
     marginVertical: 10,
     elevation: 3,
     width: 300,
-    height: 300,
     backgroundColor: '#000000',
     borderRadius: 3,
     overflow: 'hidden'
   },
   playlistImage: {
-    flex: 1,
     width: 300,
     height: 300,
-    position: 'absolute'
   },
   playlistImageOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    alignSelf: 'flex-end'
+    backgroundColor: '#ffffff',
+    width: 300
   },
   playlistText: {
     fontSize: 20,
-    color: '#ffffff',
+    color: '#000000',
     margin: 6
   }
 });

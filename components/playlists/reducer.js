@@ -1,8 +1,9 @@
-import { GET_PLAYLISTS, SEARCH_PLAYLISTS } from './actions';
+import { GET_PLAYLISTS, GET_PLAYLIST_TRACKS, SEARCH_PLAYLISTS } from './actions';
 
 const initialState = {
   playlists: [],
-  lastRetrieved: []
+  lastRetrieved: [],
+  tracks: []
 };
 
 const playlistReducer = function(state = initialState, action) {
@@ -12,6 +13,11 @@ const playlistReducer = function(state = initialState, action) {
         ...state,
         playlists: action.payload,
         lastRetrieved: action.payload
+      };
+    case GET_PLAYLIST_TRACKS:
+      return {
+        ...state,
+        tracks: action.payload
       };
     case SEARCH_PLAYLISTS:
       return {

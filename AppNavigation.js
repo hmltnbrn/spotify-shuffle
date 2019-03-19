@@ -22,9 +22,11 @@ import SplashScreen from './components/initial/SplashScreen.js';
 import SignInScreen from './components/initial/SignInScreen.js';
 import DrawerScreen from './components/drawer/DrawerScreen.js';
 import PlaylistsScreen from './components/playlists/PlaylistsScreen.js';
+import TracksScreen from './components/playlists/TracksScreen.js';
 
 const DrawerAvailableStack = createStackNavigator({
-  Playlists: { screen: PlaylistsScreen }
+  Playlists: { screen: PlaylistsScreen },
+  Tracks: { screen: TracksScreen }
   /* any other route where you want the drawer to remain available */
 },{
   initialRouteName: 'Playlists',
