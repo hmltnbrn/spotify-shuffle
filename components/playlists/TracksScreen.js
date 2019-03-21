@@ -20,7 +20,8 @@ import { getPlaylistTracks, shuffleTracks } from './actions';
 
 type Props = {
   tracks: Array<any>,
-  getPlaylistTracks: (id: string) => void,
+  getPlaylistTracks: (id: string, totalTracks: string) => void,
+  shuffleTracks: () => void,
   navigation: NavigationScreenProp<NavigationState>
 };
 
@@ -32,7 +33,7 @@ class TracksScreen extends Component<Props> {
   };
 
   componentDidMount() {
-    this.props.getPlaylistTracks(this.props.navigation.getParam('playlistId'));
+    this.props.getPlaylistTracks(this.props.navigation.getParam('playlistId'), this.props.navigation.getParam('playlistTracksTotal'));
   }
 
   playTrack = (track) => {
@@ -59,21 +60,21 @@ class TracksScreen extends Component<Props> {
           renderItem={({item}) => {
             let imageView = item.track.album.images.length > 0 ? (
               <Image
-              style={styles.trackImage}
-              source={{uri: item.track.album.images[item.track.album.images.length - 1].url}}
-              resizeMode="contain"
+                style={styles.trackImage}
+                source={{uri: item.track.album.images[item.track.album.images.length - 1].url}}
+                resizeMode="contain"
               /> ) : (
               <View style={[styles.trackImage, styles.missingImage]}></View>
             );
             return (
               <TouchableHighlight onPress={() => this.playTrack(item.track)} underlayColor="#fafafa">
-              <View style={styles.trackContainer}>
-              {imageView}
-              <View style={styles.trackTextCard}>
-              <Text style={styles.trackText} numberOfLines={1} ellipsizeMode="tail">{item.track.name}</Text>
-              <Text style={[styles.trackText, styles.trackTextArtists]} numberOfLines={1} ellipsizeMode="tail">{item.track.artists.map((artist) => { return artist.name; }).join(", ")}</Text>
-              </View>
-              </View>
+                <View style={styles.trackContainer}>
+                  {imageView}
+                  <View style={styles.trackTextCard}>
+                    <Text style={styles.trackText} numberOfLines={1} ellipsizeMode="tail">{item.track.name}</Text>
+                    <Text style={[styles.trackText, styles.trackTextArtists]} numberOfLines={1} ellipsizeMode="tail">{item.track.artists.map((artist) => { return artist.name; }).join(", ")}</Text>
+                  </View>
+                </View>
               </TouchableHighlight>
             );
           }}
@@ -92,8 +93,8 @@ export default connect(mapStateToProps, { getPlaylistTracks, shuffleTracks })(Tr
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   backgroundColor: '#fafafa'
+    flex: 1,
+    backgroundColor: '#fafafa'
   },
   topContainer: {
     elevation: 3,

@@ -58,6 +58,7 @@ class PlaylistsScreen extends Component<Props, State> {
     this.props.navigation.navigate('Tracks', {
       playlistId: playlist.id,
       playlistName: playlist.name,
+      playlistTracksTotal: playlist.tracks.total
     });
   }
 

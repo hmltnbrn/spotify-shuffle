@@ -1,12 +1,13 @@
 import Spotify from 'rn-spotify-sdk';
 
 // Action Types
+export const SET_LOADING = 'SET_LOADING';
+export const SET_ERROR = 'SET_ERROR';
 export const GET_PLAYLISTS = 'GET_PLAYLISTS';
+export const REQUEST_PLAYLIST_TRACKS = 'REQUEST_PLAYLIST_TRACKS';
 export const GET_PLAYLIST_TRACKS = 'GET_PLAYLIST_TRACKS';
 export const SEARCH_PLAYLISTS = 'SEARCH_PLAYLISTS';
 export const SHUFFLE_TRACKS = 'SHUFFLE_TRACKS';
-export const SET_LOADING = 'SET_LOADING';
-export const SET_ERROR = 'SET_ERROR';
 
 export const getAllPlaylists = () => async dispatch => {
   try {
@@ -17,26 +18,39 @@ export const getAllPlaylists = () => async dispatch => {
     });
   } catch(err) {
     console.error(err)
-    // dispatch({
-    //   type: GET_ERRORS,
-    //   payload: err.response.data
-    // });
+    dispatch({
+      type: SET_ERROR,
+      payload: err
+    });
   }
 }
 
-export const getPlaylistTracks = (id) => async dispatch => {
+export const getPlaylistTracks = (id, totalTracks) => async dispatch => {
+  var offset = 0;
+  var limit = 100;
   try {
-    let res = await Spotify.sendRequest(`v1/playlists/${id}/tracks`, "get", {}, false);
     dispatch({
-      type: GET_PLAYLIST_TRACKS,
-      payload: res.items
+      type: REQUEST_PLAYLIST_TRACKS
+    });
+    while(totalTracks > 0) {
+      let res = await Spotify.sendRequest(`v1/playlists/${id}/tracks`, "get", { offset }, false);
+      offset += 100;
+      totalTracks -= 100;
+      dispatch({
+        type: GET_PLAYLIST_TRACKS,
+        payload: res.items
+      });
+    }
+    dispatch({
+      type: SET_LOADING,
+      payload: false
     });
   } catch(err) {
     console.error(err)
-    // dispatch({
-    //   type: GET_ERRORS,
-    //   payload: err.response.data
-    // });
+    dispatch({
+      type: SET_ERROR,
+      payload: err
+    });
   }
 }
 
