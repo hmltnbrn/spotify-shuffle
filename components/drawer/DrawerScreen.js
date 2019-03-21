@@ -5,7 +5,15 @@
 
 import React, { Component } from 'react';
 import { NavigationActions, DrawerActions, NavigationState, NavigationScreenProp } from 'react-navigation';
-import { ScrollView, Text, View, StyleSheet, SafeAreaView } from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 
@@ -26,8 +34,8 @@ class DrawerScreen extends Component<Props> {
 
   signOut() {
     Spotify.logout().finally(() => {
-			this.props.navigation.navigate('Splash');
-		});
+      this.props.navigation.navigate('Splash');
+    });
   }
 
   render () {
@@ -35,21 +43,20 @@ class DrawerScreen extends Component<Props> {
       <View>
         <ScrollView>
           <SafeAreaView style={styles.container}>
+            <View style={styles.topContainer}>
+              <View style={styles.usernameContainer}>
+                <Icon name="person" size={25} color={"#ffffff"} />
+                <Text style={styles.usernameText}>{this.props.username}</Text>
+              </View>
+            </View>
             <View>
               <View style={styles.menuItem}>
-                <Text>
-                  {this.props.username}
-                </Text>
+                <Icon name="playlist-play" size={25} color={"#1db954"} />
+                <Text style={styles.menuText} onPress={this.navigateToScreen('Playlists')}>Playlists</Text>
               </View>
               <View style={styles.menuItem}>
-                <Text onPress={this.navigateToScreen('Playlists')}>
-                  Playlists
-                </Text>
-              </View>
-              <View style={styles.menuItem}>
-                <Text onPress={this.signOut.bind(this)}>
-                  Sign Out
-                </Text>
+                <CommIcon name="logout" size={25} color={"#1db954"} />
+                <Text style={styles.menuText} onPress={this.signOut.bind(this)}>Sign Out</Text>
               </View>
             </View>
           </SafeAreaView>
@@ -67,16 +74,33 @@ export default connect(mapStateToProps)(DrawerScreen);
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1
+  },
+  topContainer: {
     flex: 1,
-  },
-  heading: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  menuItem:{
+    justifyContent: 'flex-end',
+    minHeight: 100,
+    backgroundColor: '#1db954',
     padding: 10,
-    borderWidth: 0.5,
+    marginBottom: 10
+  },
+  usernameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  usernameText: {
+    color: '#ffffff',
+    paddingLeft: 30
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
     borderColor: '#d6d7da'
+  },
+  menuText: {
+    color: '#1db954',
+    paddingLeft: 30,
+    fontWeight: 'bold'
   }
 });

@@ -5,12 +5,11 @@
 
 import React, { PureComponent } from 'react';
 import {
-	ActivityIndicator,
-	Alert,
-	StyleSheet,
-	Text,
-	TouchableHighlight,
-	View,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
   Image,
   StatusBar
 } from 'react-native';
@@ -27,21 +26,21 @@ type Props = {
 class SignInScreen extends PureComponent<Props> {
 
   goToPlaylists() {
-		this.props.navigation.navigate('Playlists');
-	}
+    this.props.navigation.navigate('Playlists');
+  }
 
   spotifyLoginButtonWasPressed = () => {
-		Spotify.login().then((loggedIn) => {
-			if(loggedIn) {
+    Spotify.login().then((loggedIn) => {
+      if(loggedIn) {
         this.props.setUserDetails();
-				this.goToPlaylists();
-			}
-		}).catch((error) => {
-			Alert.alert("Error", error.message);
-		});
-	}
+        this.goToPlaylists();
+      }
+    }).catch((error) => {
+      Alert.alert("Error", error.message);
+    });
+  }
 
-	render() {
+  render() {
     return (
       <View style={styles.container}>
         <StatusBar
@@ -60,38 +59,38 @@ class SignInScreen extends PureComponent<Props> {
         </TouchableHighlight>
       </View>
     );
-	}
+  }
 }
 
 export default connect(null, { setUserDetails })(SignInScreen);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#1db954',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1db954',
     padding: 20
-	},
-	spotifyLoginButton: {
-		justifyContent: 'center',
-		backgroundColor: '#191414',
-		overflow: 'hidden',
-		width: 200,
-		height: 40,
-		margin: 20,
+  },
+    spotifyLoginButton: {
+    justifyContent: 'center',
+    backgroundColor: '#191414',
+    overflow: 'hidden',
+    width: 200,
+    height: 40,
+    margin: 20,
     elevation: 3
-	},
-	spotifyLoginButtonText: {
-		fontSize: 20,
-		textAlign: 'center',
-		color: 'white',
-	},
-	greeting: {
-		fontSize: 30,
-		textAlign: 'center',
-		margin: 10,
+  },
+    spotifyLoginButtonText: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'white'
+  },
+    greeting: {
+    fontSize: 30,
+    textAlign: 'center',
+    margin: 10,
     color: '#ffffff',
     marginVertical: 50
-	},
+  }
 });

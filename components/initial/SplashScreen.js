@@ -5,13 +5,10 @@
 
 import React, { PureComponent } from 'react';
 import {
-	ActivityIndicator,
-	Alert,
-	StyleSheet,
-	Text,
-	TouchableHighlight,
-	View,
-  Linking
+  Alert,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
@@ -33,55 +30,55 @@ class SplashScreen extends PureComponent<Props, State> {
     spotifyInitialized: false
   };
 
-	goToPlaylists() {
-		this.props.navigation.navigate('Playlists');
-	}
+  goToPlaylists() {
+    this.props.navigation.navigate('Playlists');
+  }
 
   goToSignIn() {
-		this.props.navigation.navigate('SignIn');
-	}
+    this.props.navigation.navigate('SignIn');
+  }
 
-	async initializeIfNeeded() {
-		if(!await Spotify.isInitializedAsync()) {
-			const spotifyOptions = {
+  async initializeIfNeeded() {
+    if(!await Spotify.isInitializedAsync()) {
+      const spotifyOptions = {
         "clientID": Config.CLIENT_ID,
         "sessionUserDefaultsKey": Config.SESSION_KEY,
         "redirectURL": Config.REDIRECT_URL,
         "scopes": Config.SCOPES.split("|")
       };
-			const loggedIn = await Spotify.initialize(spotifyOptions);
-			this.setState({
-				spotifyInitialized: true
-			});
-			if(loggedIn) {
+      const loggedIn = await Spotify.initialize(spotifyOptions);
+      this.setState({
+        spotifyInitialized: true
+      });
+      if(loggedIn) {
         this.props.setUserDetails();
-				this.goToPlaylists();
-			}
+        this.goToPlaylists();
+      }
       else {
         this.goToSignIn();
       }
-		}
-		else {
-			this.setState({
-				spotifyInitialized: true
-			});
-			if(await Spotify.isLoggedInAsync()) {
+    }
+    else {
+      this.setState({
+        spotifyInitialized: true
+      });
+      if(await Spotify.isLoggedInAsync()) {
         this.props.setUserDetails();
-				this.goToPlaylists();
-			}
+        this.goToPlaylists();
+      }
       else {
         this.goToSignIn();
       }
-		}
-	}
+    }
+  }
 
-	componentDidMount() {
-		this.initializeIfNeeded().catch((error) => {
-			Alert.alert("Error", error.message);
-		});
-	}
+  componentDidMount() {
+    this.initializeIfNeeded().catch((error) => {
+      Alert.alert("Error", error.message);
+    });
+  }
 
-	render() {
+  render() {
     return (
       <View style={styles.container}>
         <Text style={styles.loadMessage}>
@@ -89,22 +86,22 @@ class SplashScreen extends PureComponent<Props, State> {
         </Text>
       </View>
     );
-	}
+  }
 }
 
 export default connect(null, { setUserDetails })(SplashScreen);
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: '#1db954',
-	},
-	loadMessage: {
-		fontSize: 50,
-		textAlign: 'center',
-		margin: 10,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1db954',
+  },
+    loadMessage: {
+    fontSize: 50,
+    textAlign: 'center',
+    margin: 10,
     color: '#ffffff'
-	}
+  }
 });

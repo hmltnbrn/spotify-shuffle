@@ -5,22 +5,18 @@
 
 import React, { Component } from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
   Image,
-  ScrollView,
-  FlatList,
-  TextInput,
-  StatusBar
+  FlatList
 } from 'react-native';
 import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
-import { getPlaylistTracks } from './actions';
+import { getPlaylistTracks, shuffleTracks } from './actions';
 
 type Props = {
   tracks: Array<any>,
@@ -35,60 +31,83 @@ class TracksScreen extends Component<Props> {
     };
   };
 
-	componentDidMount() {
+  componentDidMount() {
     this.props.getPlaylistTracks(this.props.navigation.getParam('playlistId'));
-	}
+  }
 
-	render() {
+  playTrack = (track) => {
+    console.log(track)
+    // Spotify.playURI(track.uri, 0, 0);
+  }
+
+  render() {
     const { tracks } = this.props;
-    // console.log(tracks)
+    console.log(tracks)
     return (
       <View style={styles.container}>
+        <View style={styles.topContainer}>
+          <View style={styles.buttonContainer}>
+            <Text>{`${tracks.length} ${tracks.length === 1 ? "track" : "tracks"}`}</Text>
+            <TouchableHighlight onPress={() => this.props.shuffleTracks()} underlayColor="#fafafa">
+              <Icon name="shuffle" size={25} color={"#000000"} />
+            </TouchableHighlight>
+          </View>
+        </View>
         <FlatList
           contentContainerStyle={{ padding: 20 }}
           data={tracks}
           renderItem={({item}) => {
-            // console.log(item["track"]["name"])
-            // console.log(item["track"]["album"]["images"])
-            // console.log(item.track.album.images.length)
             let imageView = item.track.album.images.length > 0 ? (
               <Image
-                style={styles.playlistImage}
-                source={{uri: item.track.album.images.pop().url}}
-                resizeMode="contain"
-              />
-            ) : (
-              <View style={[styles.playlistImage, styles.missingImage]}></View>
+              style={styles.trackImage}
+              source={{uri: item.track.album.images[item.track.album.images.length - 1].url}}
+              resizeMode="contain"
+              /> ) : (
+              <View style={[styles.trackImage, styles.missingImage]}></View>
             );
             return (
-              <View style={styles.playlistContainer}>
-                {imageView}
-                <View style={styles.playlistTextCard}>
-                  <Text style={styles.playlistText} numberOfLines={1} ellipsizeMode="tail">{item.track.name}</Text>
-                  <Text style={[styles.playlistText, styles.playlistTextArtists]} numberOfLines={1} ellipsizeMode="tail">{item.track.artists.map((artist) => { return artist.name; }).join(", ")}</Text>
-                </View>
+              <TouchableHighlight onPress={() => this.playTrack(item.track)} underlayColor="#fafafa">
+              <View style={styles.trackContainer}>
+              {imageView}
+              <View style={styles.trackTextCard}>
+              <Text style={styles.trackText} numberOfLines={1} ellipsizeMode="tail">{item.track.name}</Text>
+              <Text style={[styles.trackText, styles.trackTextArtists]} numberOfLines={1} ellipsizeMode="tail">{item.track.artists.map((artist) => { return artist.name; }).join(", ")}</Text>
               </View>
+              </View>
+              </TouchableHighlight>
             );
           }}
           keyExtractor={(item, index) => item.track.id}
         />
-      </View>
-    );
-	}
-}
+        </View>
+      );
+    }
+  }
 
 const mapStateToProps = (state) => ({
   tracks: state.playlists.tracks
 });
 
-export default connect(mapStateToProps, { getPlaylistTracks })(TracksScreen);
+export default connect(mapStateToProps, { getPlaylistTracks, shuffleTracks })(TracksScreen);
 
 const styles = StyleSheet.create({
   container: {
    flex: 1,
    backgroundColor: '#fafafa'
   },
-  playlistContainer: {
+  topContainer: {
+    elevation: 3,
+    zIndex: 3,
+    backgroundColor: '#000000'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    padding: 10
+  },
+  trackContainer: {
     alignItems: 'stretch',
     justifyContent: 'center',
     alignSelf: 'flex-start',
@@ -96,22 +115,22 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'row'
   },
-  playlistImage: {
+  trackImage: {
     width: 64,
     height: 64
   },
   missingImage: {
     backgroundColor: '#1db954'
   },
-  playlistTextCard: {
+  trackTextCard: {
     marginLeft: 10
   },
-  playlistText: {
+  trackText: {
     fontSize: 15,
     color: '#000000',
     maxWidth: 250
   },
-  playlistTextArtists: {
+  trackTextArtists: {
     fontSize: 12
   }
 });

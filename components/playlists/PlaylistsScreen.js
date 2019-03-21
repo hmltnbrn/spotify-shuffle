@@ -5,13 +5,11 @@
 
 import React, { Component } from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TouchableHighlight,
   View,
   Image,
-  ScrollView,
   FlatList,
   TextInput,
   StatusBar
@@ -44,9 +42,9 @@ class PlaylistsScreen extends Component<Props, State> {
     focus: false
   };
 
-	componentDidMount() {
+  componentDidMount() {
     this.props.getAllPlaylists();
-	}
+  }
 
   handleChange = (text) => {
     this.setState({ text: text }, this.handleSubmit);
@@ -57,14 +55,13 @@ class PlaylistsScreen extends Component<Props, State> {
   }
 
   goToTracks = (playlist) => {
-    console.log(playlist);
     this.props.navigation.navigate('Tracks', {
       playlistId: playlist.id,
       playlistName: playlist.name,
     });
   }
 
-	render() {
+  render() {
     const { playlists } = this.props;
     console.log(playlists)
     const newPlaylists = playlists.filter(playlist => playlist.images.length > 0);
@@ -102,9 +99,9 @@ class PlaylistsScreen extends Component<Props, State> {
                     source={{uri: item.images[0].url}}
                     resizeMode="contain"
                   />
-                  <View style={styles.playlistImageOverlay}>
+                  <View style={styles.playlistImageCard}>
                     <Text style={styles.playlistText}>{item.name}</Text>
-                    <Text style={{ color: '#000000', margin: 6 }}>{`${item.tracks.total} ${item.tracks.total === 1 ? "Track" : "Tracks"}`}</Text>
+                    <Text style={[styles.playlistText, styles.playlistTextTracks]}>{`${item.tracks.total} ${item.tracks.total === 1 ? "track" : "tracks"}`}</Text>
                   </View>
                 </View>
               </TouchableHighlight>
@@ -114,7 +111,7 @@ class PlaylistsScreen extends Component<Props, State> {
         />
       </View>
     );
-	}
+  }
 }
 
 const mapStateToProps = (state) => ({
@@ -125,9 +122,9 @@ export default connect(mapStateToProps, { getAllPlaylists, searchPlaylists })(Pl
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   backgroundColor: '#fafafa',
-   position: 'relative'
+    flex: 1,
+    backgroundColor: '#fafafa',
+    position: 'relative'
   },
   searchBarContainer: {
     height: 50,
@@ -178,7 +175,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
   },
-  playlistImageOverlay: {
+  playlistImageCard: {
     backgroundColor: '#ffffff',
     width: 300
   },
@@ -186,5 +183,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000000',
     margin: 6
+  },
+  playlistTextTracks: {
+    fontSize: 14
   }
 });
