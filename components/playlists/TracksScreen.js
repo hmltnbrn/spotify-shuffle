@@ -17,11 +17,13 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 import { getPlaylistTracks, shuffleTracks } from './actions';
+import { playTrack } from '../player/actions';
 
 type Props = {
   tracks: Array<any>,
   getPlaylistTracks: (id: string, totalTracks: string) => void,
   shuffleTracks: () => void,
+  playTrack: (track: Object, index: number) => void,
   navigation: NavigationScreenProp<NavigationState>
 };
 
@@ -36,9 +38,9 @@ class TracksScreen extends Component<Props> {
     this.props.getPlaylistTracks(this.props.navigation.getParam('playlistId'), this.props.navigation.getParam('playlistTracksTotal'));
   }
 
-  playTrack = (track) => {
+  playTrack = (track, index) => {
     console.log(track)
-    // Spotify.playURI(track.uri, 0, 0);
+    this.props.playTrack(track, index);
   }
 
   render() {
@@ -57,7 +59,7 @@ class TracksScreen extends Component<Props> {
         <FlatList
           contentContainerStyle={{ padding: 20 }}
           data={tracks}
-          renderItem={({item}) => {
+          renderItem={({item, index}) => {
             let imageView = item.track.album.images.length > 0 ? (
               <Image
                 style={styles.trackImage}
@@ -67,7 +69,7 @@ class TracksScreen extends Component<Props> {
               <View style={[styles.trackImage, styles.missingImage]}></View>
             );
             return (
-              <TouchableHighlight onPress={() => this.playTrack(item.track)} underlayColor="#fafafa">
+              <TouchableHighlight onPress={() => this.playTrack(item.track, index)} underlayColor="#fafafa">
                 <View style={styles.trackContainer}>
                   {imageView}
                   <View style={styles.trackTextCard}>
@@ -89,7 +91,7 @@ const mapStateToProps = (state) => ({
   tracks: state.playlists.tracks
 });
 
-export default connect(mapStateToProps, { getPlaylistTracks, shuffleTracks })(TracksScreen);
+export default connect(mapStateToProps, { getPlaylistTracks, shuffleTracks, playTrack })(TracksScreen);
 
 const styles = StyleSheet.create({
   container: {

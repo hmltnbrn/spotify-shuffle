@@ -8,6 +8,7 @@
     "flow": "flow"
   },
   "dependencies": {
+    "@react-native-community/slider": "^1.0.3",
     "axios": "^0.18.0",
     "react": "16.8.3",
     "react-native": "^0.59.1",
