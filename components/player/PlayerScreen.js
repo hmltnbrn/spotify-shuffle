@@ -59,6 +59,12 @@ class PlayerScreen extends Component<Props, State> {
     }
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    // if(JSON.stringify(nextProps.track) !== JSON.stringify(this.props.track)) {
+    //   clearInterval(this.intervalId);
+    // }
+  }
+
   componentWillUnmount() {
     clearInterval(this.intervalId);
   }
@@ -105,13 +111,15 @@ class PlayerScreen extends Component<Props, State> {
 
   async onBack() {
     if (this.state.currentPosition < 10 && this.props.trackIndex > 0) {
-      this.props.playTrack(this.props.tracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1)
+      clearInterval(this.intervalId);
+      this.props.playTrack(this.props.tracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1);
       this.setState({
         currentPosition: 0,
         sliding: false
       }, this.songTicker);
     }
     else if(this.props.trackIndex > 0) {
+      clearInterval(this.intervalId);
       await Spotify.seek(0);
       this.setState({
         currentPosition: 0,
@@ -121,6 +129,7 @@ class PlayerScreen extends Component<Props, State> {
 
   onForward() {
     if (this.props.trackIndex < this.props.tracks.length - 1) {
+      clearInterval(this.intervalId);
       this.props.playTrack(this.props.tracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1);
       this.setState({
         currentPosition: 0,
@@ -147,6 +156,7 @@ class PlayerScreen extends Component<Props, State> {
           trackLength={totalLength}
           onSeek={this.seek.bind(this)}
           onSlidingStart={this.onSliding.bind(this)}
+          onForward={this.onForward.bind(this)}
         />
         <Controls
           paused={this.props.paused}

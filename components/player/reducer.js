@@ -16,6 +16,7 @@ const playerReducer = function(state = initialState, action) {
       return {
         ...state,
         playing: true,
+        paused: false,
         track: action.payload.track,
         trackIndex: action.payload.index
       };
