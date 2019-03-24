@@ -23,24 +23,33 @@ type Props = {
   tracks: Array<any>,
   getPlaylistTracks: (id: string, totalTracks: string) => void,
   shuffleTracks: () => void,
-  playTrack: (track: Object, index: number) => void,
+  playTrack: (track: Object, trackIndex: number, playlistIndex: number) => void,
   navigation: NavigationScreenProp<NavigationState>
 };
 
-class TracksScreen extends Component<Props> {
+type State = {
+  playlistIndex: number
+};
+
+class TracksScreen extends Component<Props, State> {
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: navigation.getParam('playlistName', 'Playlist Tracks'),
     };
   };
 
+  state = {
+    playlistIndex: 0
+  };
+
   componentDidMount() {
     this.props.getPlaylistTracks(this.props.navigation.getParam('playlistId'), this.props.navigation.getParam('playlistTracksTotal'));
+    this.setState({ playlistIndex: this.props.navigation.getParam('playlistIndex') });
   }
 
   playTrack = (track, index) => {
     console.log(track)
-    this.props.playTrack(track, index);
+    this.props.playTrack(track, index, this.state.playlistIndex);
   }
 
   render() {

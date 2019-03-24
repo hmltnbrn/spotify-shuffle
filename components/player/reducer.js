@@ -1,13 +1,13 @@
 import {
   SET_TRACK,
-  TOGGLE_PAUSE
+  TOGGLE_PLAYING
 } from './actions';
 
 const initialState = {
   playing: false,
-  paused: false,
   track: {},
-  trackIndex: 0
+  trackIndex: 0,
+  playlistIndex: 0
 };
 
 const playerReducer = function(state = initialState, action) {
@@ -16,14 +16,14 @@ const playerReducer = function(state = initialState, action) {
       return {
         ...state,
         playing: true,
-        paused: false,
         track: action.payload.track,
-        trackIndex: action.payload.index
+        trackIndex: action.payload.trackIndex,
+        playlistIndex: action.payload.playlistIndex
       };
-    case TOGGLE_PAUSE:
+    case TOGGLE_PLAYING:
       return {
         ...state,
-        paused: !state.paused
+        playing: action.payload
       };
     default:
       return state;

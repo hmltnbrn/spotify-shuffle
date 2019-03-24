@@ -4,19 +4,13 @@
  */
 
 import React, { Component } from 'react';
-import { NavigationActions, DrawerActions, NavigationState, NavigationScreenProp } from 'react-navigation';
 import {
-  ScrollView,
-  Text,
   View,
-  StyleSheet,
-  SafeAreaView
+  StyleSheet
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
-import { playTrack, togglePause } from './actions';
+import { playTrack, togglePlaying } from './actions';
 
 import Header from './Header';
 import AlbumArt from './AlbumArt';
@@ -28,11 +22,11 @@ type Props = {
   playlists: Array<any>,
   tracks: Array<any>,
   playing: boolean,
-  paused: boolean,
   track: Object,
   trackIndex: number,
-  playTrack: (track: Object, index: number) => void,
-  togglePause: (paused: boolean) => void => void
+  playlistIndex: number,
+  playTrack: (track: Object, trackIndex: number, playlistIndex: number) => void,
+  togglePlaying: (playing: boolean) => void => void
 };
 
 type State = {
@@ -48,21 +42,15 @@ class PlayerScreen extends Component<Props, State> {
   state = {
     currentPosition: 0,
     sliding: false
-  }
+  };
 
   intervalId: IntervalID;
 
   async componentDidMount() {
     const currentlyPlaying = await Spotify.getPlaybackStateAsync();
-    if(currentlyPlaying && !this.props.paused) {
+    if(currentlyPlaying && this.props.playing) {
       this.setState({ currentPosition: Math.floor(currentlyPlaying.position) }, this.songTicker);
     }
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    // if(JSON.stringify(nextProps.track) !== JSON.stringify(this.props.track)) {
-    //   clearInterval(this.intervalId);
-    // }
   }
 
   componentWillUnmount() {
@@ -76,13 +64,13 @@ class PlayerScreen extends Component<Props, State> {
       currentPosition: time,
       sliding: false
     }, this.songTicker);
-    this.togglePause(true);
+    this.togglePlaying(true);
   }
 
   onSliding() {
     if(!this.state.sliding) {
       clearInterval(this.intervalId);
-      this.togglePause(false);
+      this.togglePlaying(false);
     }
     this.setState({
       sliding: true
@@ -101,10 +89,10 @@ class PlayerScreen extends Component<Props, State> {
     });
   }
 
-  togglePause(pauseState) {
+  togglePlaying(playState) {
     clearInterval(this.intervalId);
-    this.props.togglePause(pauseState);
-    if(pauseState) {
+    this.props.togglePlaying(playState);
+    if(playState) {
       this.songTicker();
     }
   }
@@ -112,7 +100,7 @@ class PlayerScreen extends Component<Props, State> {
   async onBack() {
     if (this.state.currentPosition < 10 && this.props.trackIndex > 0) {
       clearInterval(this.intervalId);
-      this.props.playTrack(this.props.tracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1);
+      this.props.playTrack(this.props.tracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1, this.props.playlistIndex);
       this.setState({
         currentPosition: 0,
         sliding: false
@@ -123,14 +111,22 @@ class PlayerScreen extends Component<Props, State> {
       await Spotify.seek(0);
       this.setState({
         currentPosition: 0,
-      });
+      }, this.songTicker);
     }
   }
 
   onForward() {
     if (this.props.trackIndex < this.props.tracks.length - 1) {
       clearInterval(this.intervalId);
-      this.props.playTrack(this.props.tracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1);
+      this.props.playTrack(this.props.tracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1, this.props.playlistIndex);
+      this.setState({
+        currentPosition: 0,
+        sliding: false
+      }, this.songTicker);
+    }
+    else {
+      clearInterval(this.intervalId);
+      this.props.playTrack(this.props.tracks[0].track, 0, this.props.playlistIndex);
       this.setState({
         currentPosition: 0,
         sliding: false
@@ -139,29 +135,36 @@ class PlayerScreen extends Component<Props, State> {
   }
 
   render () {
-    const track = this.props.track;
-    const totalLength = this.props.track.duration_ms/1000;
+    const { track, playing, tracks, trackIndex, playlists, playlistIndex } = this.props;
+    const totalTracks = tracks.length;
+    const trackLength = track.duration_ms/1000;
+    const artist = track.artists.map((artist) => { return artist.name; }).join(", ");
+    const playlistName = playlists[playlistIndex].name;
     return (
       <View style={styles.container}>
-        <Header text={"Header Text"}/>
+        <Header
+          playlistName={playlistName}
+          totalTracks={totalTracks}
+          currentTrack={trackIndex + 1}
+        />
         <AlbumArt
           url={track.album.images[0].url}
         />
         <TrackDetails
-          title={track.title}
-          artist={track.artist}
+          title={track.name}
+          artist={artist}
         />
         <SeekBar
           currentPosition={this.state.currentPosition}
-          trackLength={totalLength}
+          trackLength={Math.floor(trackLength)}
           onSeek={this.seek.bind(this)}
           onSlidingStart={this.onSliding.bind(this)}
           onForward={this.onForward.bind(this)}
         />
         <Controls
-          paused={this.props.paused}
-          onPressPause={() => this.togglePause(false)}
-          onPressPlay={() => this.togglePause(true)}
+          playing={playing}
+          onPressPause={() => this.togglePlaying(false)}
+          onPressPlay={() => this.togglePlaying(true)}
           onBack={this.onBack.bind(this)}
           onForward={this.onForward.bind(this)}
         />
@@ -174,12 +177,12 @@ const mapStateToProps = (state) => ({
   playlists: state.playlists.playlists,
   tracks: state.playlists.tracks,
   playing: state.player.playing,
-  paused: state.player.paused,
   track: state.player.track,
-  trackIndex: state.player.trackIndex
+  trackIndex: state.player.trackIndex,
+  playlistIndex: state.player.playlistIndex
 });
 
-export default connect(mapStateToProps, { playTrack, togglePause })(PlayerScreen);
+export default connect(mapStateToProps, { playTrack, togglePlaying })(PlayerScreen);
 
 const styles = StyleSheet.create({
   container: {

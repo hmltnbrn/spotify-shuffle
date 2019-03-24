@@ -2,14 +2,14 @@ import Spotify from 'rn-spotify-sdk';
 
 // Action Types
 export const SET_TRACK = 'SET_TRACK';
-export const TOGGLE_PAUSE = 'TOGGLE_PAUSE';
+export const TOGGLE_PLAYING = 'TOGGLE_PLAYING';
 
-export const playTrack = (track, index) => async dispatch => {
+export const playTrack = (track, trackIndex, playlistIndex) => async dispatch => {
   try {
     await Spotify.playURI(track.uri, 0, 0);
     dispatch({
       type: SET_TRACK,
-      payload: { track, index }
+      payload: { track, trackIndex, playlistIndex }
     });
   } catch(err) {
     console.error(err)
@@ -20,11 +20,12 @@ export const playTrack = (track, index) => async dispatch => {
   }
 }
 
-export const togglePause = (pause) => async dispatch => {
+export const togglePlaying = (playing) => async dispatch => {
   try {
-    await Spotify.setPlaying(pause);
+    await Spotify.setPlaying(playing);
     dispatch({
-      type: TOGGLE_PAUSE
+      type: TOGGLE_PLAYING,
+      payload: playing
     });
   } catch(err) {
     console.error(err)

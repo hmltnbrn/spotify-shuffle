@@ -7,12 +7,8 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Dimensions
+  StyleSheet
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import Slider from '@react-native-community/slider';
 
 type Props = {
@@ -23,23 +19,27 @@ type Props = {
   onForward: () => void
 };
 
+const pad = (n, width) => {
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join("0") + n;
+}
+const minutesAndSeconds = (position) => ([
+  pad(Math.floor(position / 60), 2),
+  pad(position % 60, 2),
+]);
+
 class SeekBar extends Component<Props> {
+
   componentWillReceiveProps(nextProps: Props) {
     if(nextProps.currentPosition === Math.round(nextProps.trackLength)) {
       this.props.onForward();
     }
   }
+
   render () {
-    const pad = (n, width, z=0) => {
-      n = n + '';
-      return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-    }
-    const minutesAndSeconds = (position) => ([
-      pad(Math.floor(position / 60), 2),
-      pad(position % 60, 2),
-    ]);
-    const elapsed = minutesAndSeconds(this.props.currentPosition);
-    const remaining = minutesAndSeconds(Math.floor(this.props.trackLength) - this.props.currentPosition);
+    const { trackLength, currentPosition } = this.props;
+    const elapsed = minutesAndSeconds(currentPosition);
+    const remaining = minutesAndSeconds(trackLength - currentPosition);
     return (
       <View style={styles.container}>
         <View style={{flexDirection: 'row'}}>
@@ -48,13 +48,14 @@ class SeekBar extends Component<Props> {
           </Text>
           <View style={{flex: 1}} />
           <Text style={[styles.text, {width: 40}]}>
-            {this.props.trackLength > 1 && "-" + remaining[0] + ":" + remaining[1]}
+            {trackLength > 1 && "-" + remaining[0] + ":" + remaining[1]}
           </Text>
         </View>
         <Slider
           minimumValue={0}
-          maximumValue={Math.max(this.props.trackLength, 1, this.props.currentPosition + 1)}
-          value={this.props.currentPosition}
+          maximumValue={Math.max(trackLength, 1, currentPosition + 1)}
+          step={1}
+          value={currentPosition}
           onValueChange={() => this.props.onSlidingStart()}
           onSlidingComplete={(time) => this.props.onSeek(time)}
           minimumTrackTintColor="#ffffff"
@@ -72,21 +73,11 @@ const styles = StyleSheet.create({
   container: {
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 16,
-  },
-  track: {
-    height: 2,
-    borderRadius: 1,
-  },
-  thumb: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: 'white',
+    paddingTop: 16
   },
   text: {
     color: 'rgba(255, 255, 255, 0.72)',
     fontSize: 12,
-    textAlign:'center',
+    textAlign:'center'
   }
 });

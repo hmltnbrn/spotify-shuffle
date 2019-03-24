@@ -54,8 +54,9 @@ class PlaylistsScreen extends Component<Props, State> {
     this.props.searchPlaylists(this.state.text);
   }
 
-  goToTracks = (playlist) => {
+  goToTracks = (playlist, index) => {
     this.props.navigation.navigate('Tracks', {
+      playlistIndex: index,
       playlistId: playlist.id,
       playlistName: playlist.name,
       playlistTracksTotal: playlist.tracks.total
@@ -65,7 +66,6 @@ class PlaylistsScreen extends Component<Props, State> {
   render() {
     const { playlists } = this.props;
     console.log(playlists)
-    const newPlaylists = playlists.filter(playlist => playlist.images.length > 0);
     return (
       <View style={styles.container}>
         <StatusBar
@@ -90,16 +90,25 @@ class PlaylistsScreen extends Component<Props, State> {
         </View>
         <FlatList
           contentContainerStyle={{ paddingTop: 65 }}
-          data={newPlaylists}
-          renderItem={({item}) => {
+          data={playlists}
+          renderItem={({item, index}) => {
+            let imageView = item.images.length > 0 ? (
+              <Image
+                style={styles.playlistImage}
+                source={{uri: item.images[0].url}}
+                resizeMode="contain"
+              /> ) : (
+              <View style={[styles.playlistImage, styles.missingImage]}>
+                <Image
+                  style={{width: 200, height: 200}}
+                  source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
+                />
+              </View>
+            );
             return (
-              <TouchableHighlight onPress={() => this.goToTracks(item)} underlayColor="#fafafa">
+              <TouchableHighlight onPress={() => this.goToTracks(item, index)} underlayColor="#fafafa">
                 <View style={styles.playlistContainer}>
-                  <Image
-                    style={styles.playlistImage}
-                    source={{uri: item.images[0].url}}
-                    resizeMode="contain"
-                  />
+                  {imageView}
                   <View style={styles.playlistImageCard}>
                     <Text style={styles.playlistText}>{item.name}</Text>
                     <Text style={[styles.playlistText, styles.playlistTextTracks]}>{`${item.tracks.total} ${item.tracks.total === 1 ? "track" : "tracks"}`}</Text>
@@ -179,6 +188,11 @@ const styles = StyleSheet.create({
   playlistImageCard: {
     backgroundColor: '#ffffff',
     width: 300
+  },
+  missingImage: {
+    backgroundColor: '#1db954',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   playlistText: {
     fontSize: 20,

@@ -7,22 +7,26 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
+  StyleSheet
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
-  text: string
+  playlistName: string,
+  totalTracks: number,
+  currentTrack: number
 };
 
 class Header extends Component<Props> {
   render () {
+    const { playlistName, totalTracks, currentTrack } = this.props;
     return (
       <View style={styles.container}>
         <Icon name="arrow-drop-down" size={20} color={"#ffffff"} />
-        <Text style={styles.message}>{this.props.text}</Text>
+        <View>
+          <Text style={[styles.message, styles.playlistName]} numberOfLines={1} ellipsizeMode="tail">{playlistName}</Text>
+          <Text style={styles.message}>{currentTrack} / {totalTracks}</Text>
+        </View>
         <Icon name="arrow-drop-down" size={20} color={"#ffffff"} />
       </View>
     );
@@ -38,15 +42,16 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   message: {
-    flex: 1,
     textAlign: 'center',
     color: 'rgba(255, 255, 255, 0.72)',
     fontWeight: 'bold',
-    fontSize: 10,
+    fontSize: 10
   },
-  button: {
-    opacity: 0.72
+  playlistName: {
+    fontSize: 13,
+    maxWidth: 250
   }
 });
