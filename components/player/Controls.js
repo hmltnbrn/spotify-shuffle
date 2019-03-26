@@ -17,7 +17,9 @@ type Props = {
   onPressPause: () => void,
   onPressPlay: () => void,
   onBack: () => void,
-  onForward: () => void
+  onForward: () => void,
+  onRepeat: () => void,
+  onShuffle: () => void
 };
 
 class Controls extends Component<Props> {
@@ -25,6 +27,9 @@ class Controls extends Component<Props> {
     const { playing } = this.props || true;
     return (
       <View style={styles.container}>
+        <TouchableOpacity onPress={() => this.props.onRepeat()} >
+          <Icon name="repeat" size={20} color={"#ffffff"} />
+        </TouchableOpacity>
         <View style={{width: 40}} />
         <TouchableOpacity onPress={() => this.props.onBack()}>
           <Icon name="skip-previous" size={50} color={"#ffffff"} />
@@ -47,6 +52,9 @@ class Controls extends Component<Props> {
           <Icon name="skip-next" size={50} color={"#ffffff"} />
         </TouchableOpacity>
         <View style={{width: 40}} />
+        <TouchableOpacity onPress={() => this.props.onShuffle()} >
+          <Icon name="shuffle" size={20} color={"#ffffff"} />
+        </TouchableOpacity>
       </View>
     );
   }

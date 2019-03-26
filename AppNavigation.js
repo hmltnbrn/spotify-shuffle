@@ -27,8 +27,7 @@ import PlayerScreen from './components/player/PlayerScreen.js';
 
 const DrawerAvailableStack = createStackNavigator({
   Playlists: { screen: PlaylistsScreen },
-  Tracks: { screen: TracksScreen },
-  Player: { screen: PlayerScreen }
+  Tracks: { screen: TracksScreen }
   /* any other route where you want the drawer to remain available */
 },{
   initialRouteName: 'Playlists',

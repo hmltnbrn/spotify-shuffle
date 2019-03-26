@@ -44,14 +44,14 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    fontSize: 16,
+    fontSize: 25,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center'
   },
   artist: {
     color: 'rgba(255, 255, 255, 0.72)',
-    fontSize: 12,
+    fontSize: 20,
     marginTop: 4
   }
 });

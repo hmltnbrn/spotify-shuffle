@@ -134,6 +134,14 @@ class PlayerScreen extends Component<Props, State> {
     }
   }
 
+  onRepeat() {
+    console.log("clicked repeat")
+  }
+
+  onShuffle() {
+    console.log("clicked shuffle")
+  }
+
   render () {
     const { track, playing, tracks, trackIndex, playlists, playlistIndex } = this.props;
     const totalTracks = tracks.length;
@@ -167,6 +175,8 @@ class PlayerScreen extends Component<Props, State> {
           onPressPlay={() => this.togglePlaying(true)}
           onBack={this.onBack.bind(this)}
           onForward={this.onForward.bind(this)}
+          onRepeat={this.onRepeat.bind(this)}
+          onShuffle={this.onShuffle.bind(this)}
         />
       </View>
     );

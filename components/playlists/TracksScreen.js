@@ -75,7 +75,14 @@ class TracksScreen extends Component<Props, State> {
                 source={{uri: item.track.album.images[item.track.album.images.length - 1].url}}
                 resizeMode="contain"
               /> ) : (
-              <View style={[styles.trackImage, styles.missingImage]}></View>
+              <View
+                style={[styles.trackImage, styles.missingImage]}
+              >
+                <Image
+                  style={{width: 40, height: 40}}
+                  source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
+                />
+              </View>
             );
             return (
               <TouchableHighlight onPress={() => this.playTrack(item.track, index)} underlayColor="#fafafa">
@@ -89,7 +96,9 @@ class TracksScreen extends Component<Props, State> {
               </TouchableHighlight>
             );
           }}
-          keyExtractor={(item, index) => item.track.id}
+          keyExtractor={(item, index) => {
+            return item.track.id == "null" || !item.track.id ? index.toString() : item.track.id
+          }}
         />
         </View>
       );
@@ -132,7 +141,9 @@ const styles = StyleSheet.create({
     height: 64
   },
   missingImage: {
-    backgroundColor: '#1db954'
+    backgroundColor: '#1db954',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   trackTextCard: {
     marginLeft: 10

@@ -4,6 +4,7 @@ import {
 } from './actions';
 
 const initialState = {
+  active: false,
   playing: false,
   track: {},
   trackIndex: 0,
@@ -15,6 +16,7 @@ const playerReducer = function(state = initialState, action) {
     case SET_TRACK:
       return {
         ...state,
+        active: true,
         playing: true,
         track: action.payload.track,
         trackIndex: action.payload.trackIndex,

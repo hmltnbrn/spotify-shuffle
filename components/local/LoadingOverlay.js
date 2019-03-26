@@ -13,8 +13,8 @@ import {
 import { connect } from 'react-redux';
 
 type Props = {
-  playlistLoading: boolean,
-  children?: Node
+  children?: Node,
+  playlistLoading: boolean
 };
 
 class LoadingOverlay extends Component<Props> {

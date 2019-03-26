@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 
 import LoadingOverlay from './components/local/LoadingOverlay.js';
+import PlayerOverlay from './components/player/PlayerOverlay.js';
 
 import AppNavigation from './AppNavigation';
 
@@ -16,7 +17,9 @@ export default class App extends Component<{}> {
     return (
       <Provider store={store}>
         <LoadingOverlay>
-          <AppNavigation />
+          <PlayerOverlay>
+            <AppNavigation />
+          </PlayerOverlay>
         </LoadingOverlay>
       </Provider>
     )

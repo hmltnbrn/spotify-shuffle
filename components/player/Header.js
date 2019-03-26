@@ -48,10 +48,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'rgba(255, 255, 255, 0.72)',
     fontWeight: 'bold',
-    fontSize: 10
+    fontSize: 13
   },
   playlistName: {
-    fontSize: 13,
+    fontSize: 16,
     maxWidth: 250
   }
 });

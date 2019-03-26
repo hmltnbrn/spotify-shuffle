@@ -55,10 +55,6 @@ class DrawerScreen extends Component<Props> {
                 <Text style={styles.menuText} onPress={this.navigateToScreen('Playlists')}>Playlists</Text>
               </View>
               <View style={styles.menuItem}>
-                <Icon name="music-note" size={25} color={"#1db954"} />
-                <Text style={styles.menuText} onPress={this.navigateToScreen('Player')}>Player</Text>
-              </View>
-              <View style={styles.menuItem}>
                 <CommIcon name="logout" size={25} color={"#1db954"} />
                 <Text style={styles.menuText} onPress={this.signOut.bind(this)}>Sign Out</Text>
               </View>
