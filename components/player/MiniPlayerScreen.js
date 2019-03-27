@@ -11,19 +11,110 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
+import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
-import { togglePlaying } from './actions';
+import { playTrack, togglePlaying } from './actions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   playing: boolean,
+  playingTracks: Array<any>,
+  tracks: Array<any>,
   track: Object,
+  trackIndex: number,
+  playlistIndex: number,
+  repeatTrack: boolean,
+  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
   togglePlaying: (playing: boolean) => void => void
 };
 
-class MiniPlayerScreen extends Component<Props> {
+type State = {
+  currentPosition: number
+};
+
+class MiniPlayerScreen extends Component<Props, State> {
+  intervalId: IntervalID;
+
+  state = {
+    currentPosition: 0
+  };
+
+  async componentDidMount() {
+    const currentlyPlaying = await Spotify.getPlaybackStateAsync();
+    if(currentlyPlaying && this.props.playing) {
+      this.setState({ currentPosition: Math.floor(currentlyPlaying.position) }, this.songTicker);
+    }
+    else if(currentlyPlaying && !this.props.playing) {
+      this.setState({ currentPosition: Math.floor(currentlyPlaying.position) });
+    }
+  }
+
+  async componentWillReceiveProps(nextProps: Props) {
+    if(nextProps.trackIndex !== this.props.trackIndex || nextProps.playlistIndex !== this.props.playlistIndex) {
+      clearInterval(this.intervalId);
+      const currentlyPlaying = await Spotify.getPlaybackStateAsync();
+      if(currentlyPlaying && this.props.playing) {
+        this.setState({ currentPosition: Math.floor(currentlyPlaying.position) }, this.songTicker);
+      }
+      else if(currentlyPlaying && !this.props.playing) {
+        this.setState({ currentPosition: Math.floor(currentlyPlaying.position) });
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+
+  songTicker() {
+    this.intervalId = setInterval(
+      () => this.onProgress(), 1000
+    );
+  }
+
+  onProgress() {
+    if(this.state.currentPosition + 1 >= this.props.track.duration_ms/1000) {
+      this.onForward();
+    }
+    else {
+      this.setState(prevState => {
+        return { currentPosition: prevState.currentPosition + 1 }
+      });
+    }
+  }
+
   togglePlaying(playState) {
+    clearInterval(this.intervalId);
     this.props.togglePlaying(playState);
+    if(playState) {
+      this.songTicker();
+    }
+  }
+
+  onForward() {
+    if(this.props.repeatTrack) {
+      clearInterval(this.intervalId);
+      this.props.playTrack(this.props.playingTracks[this.props.trackIndex].track, this.props.trackIndex, this.props.playlistIndex);
+      this.setState({
+        currentPosition: 0
+      }, this.songTicker);
+    }
+    else {
+      if (this.props.trackIndex < this.props.tracks.length - 1) {
+        clearInterval(this.intervalId);
+        this.props.playTrack(this.props.playingTracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1, this.props.playlistIndex);
+        this.setState({
+          currentPosition: 0
+        }, this.songTicker);
+      }
+      else {
+        clearInterval(this.intervalId);
+        this.props.playTrack(this.props.playingTracks[0].track, 0, this.props.playlistIndex);
+        this.setState({
+          currentPosition: 0
+        }, this.songTicker);
+      }
+    }
   }
 
   render () {
@@ -76,10 +167,15 @@ class MiniPlayerScreen extends Component<Props> {
 
 const mapStateToProps = (state) => ({
   playing: state.player.playing,
-  track: state.player.track
+  playingTracks: state.player.playingTracks,
+  tracks: state.playlists.tracks,
+  track: state.player.track,
+  trackIndex: state.player.trackIndex,
+  playlistIndex: state.player.playlistIndex,
+  repeatTrack: state.player.repeat
 });
 
-export default connect(mapStateToProps, { togglePlaying })(MiniPlayerScreen);
+export default connect(mapStateToProps, { playTrack, togglePlaying })(MiniPlayerScreen);
 
 const styles = StyleSheet.create({
   container: {

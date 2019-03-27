@@ -7,19 +7,22 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   playlistName: string,
   totalTracks: number,
-  currentTrack: number
+  currentTrack: number,
+  showTracks: boolean,
+  changeTrackCard: () => void
 };
 
 class Header extends Component<Props> {
   render () {
-    const { playlistName, totalTracks, currentTrack } = this.props;
+    const { playlistName, totalTracks, currentTrack, showTracks } = this.props;
     return (
       <View style={styles.container}>
         <Icon name="arrow-drop-down" size={20} color={"#ffffff"} />
@@ -27,7 +30,9 @@ class Header extends Component<Props> {
           <Text style={[styles.message, styles.playlistName]} numberOfLines={1} ellipsizeMode="tail">{playlistName}</Text>
           <Text style={styles.message}>{currentTrack} / {totalTracks}</Text>
         </View>
-        <Icon name="arrow-drop-down" size={20} color={"#ffffff"} />
+        <TouchableOpacity onPress={() => this.props.changeTrackCard()} >
+          <Icon name="queue-music" size={25} color={showTracks ? "#1db954" : "#ffffff"} />
+        </TouchableOpacity>
       </View>
     );
   }

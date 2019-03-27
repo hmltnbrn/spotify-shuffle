@@ -3,6 +3,8 @@ import Spotify from 'rn-spotify-sdk';
 // Action Types
 export const SET_TRACK = 'SET_TRACK';
 export const TOGGLE_PLAYING = 'TOGGLE_PLAYING';
+export const SHUFFLE_TRACKS = 'SHUFFLE_TRACKS';
+export const SET_REPEAT = 'SET_REPEAT';
 
 export const playTrack = (track, trackIndex, playlistIndex, playingTracks) => async dispatch => {
   try {
@@ -18,7 +20,7 @@ export const playTrack = (track, trackIndex, playlistIndex, playingTracks) => as
     //   payload: err
     // });
   }
-}
+};
 
 export const togglePlaying = (playing) => async dispatch => {
   try {
@@ -34,4 +36,17 @@ export const togglePlaying = (playing) => async dispatch => {
     //   payload: err
     // });
   }
-}
+};
+
+export const shuffleTracks = () => async dispatch => {
+  dispatch({
+    type: SHUFFLE_TRACKS
+  });
+};
+
+export const setRepeat = (repeat) => async dispatch => {
+  dispatch({
+    type: SET_REPEAT,
+    payload: repeat
+  });
+};

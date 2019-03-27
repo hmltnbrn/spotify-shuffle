@@ -6,16 +6,19 @@
 import React, { Component } from 'react';
 import {
   View,
-  StyleSheet
+  StyleSheet,
+  Animated,
+  Dimensions
 } from 'react-native';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
-import { playTrack, togglePlaying } from './actions';
+import { playTrack, togglePlaying, shuffleTracks, setRepeat } from './actions';
 
 import Toast from '../local/Toast';
 
 import Header from './Header';
 import AlbumArt from './AlbumArt';
+import TrackList from './TrackList';
 import TrackDetails from './TrackDetails';
 import Controls from './Controls';
 import SeekBar from './SeekBar';
@@ -28,15 +31,21 @@ type Props = {
   trackIndex: number,
   playlistIndex: number,
   playingTracks: Array<any>,
+  repeatTrack: boolean,
   playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
-  togglePlaying: (playing: boolean) => void => void
+  togglePlaying: (playing: boolean) => void => void,
+  shuffleTracks: () => void,
+  setRepeat: (repeat: boolean) => void
 };
 
 type State = {
   currentPosition: number,
   sliding: boolean,
   toastVisible: boolean,
-  toastMessage: string
+  toastMessage: string,
+  fadeFront: any,
+  fadeBack: any,
+  showTracks: boolean
 };
 
 class PlayerScreen extends Component<Props, State> {
@@ -44,12 +53,18 @@ class PlayerScreen extends Component<Props, State> {
     headerTitle: 'Player'
   };
 
-  state = {
-    currentPosition: 0,
-    sliding: false,
-    toastVisible: false,
-    toastMessage: ""
-  };
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      currentPosition: 0,
+      sliding: false,
+      toastVisible: false,
+      toastMessage: "",
+      fadeFront: new Animated.Value(1),
+      fadeBack: new Animated.Value(0),
+      showTracks: false
+    };
+  }
 
   intervalId: IntervalID;
 
@@ -60,6 +75,19 @@ class PlayerScreen extends Component<Props, State> {
     }
     else if(currentlyPlaying && !this.props.playing) {
       this.setState({ currentPosition: Math.floor(currentlyPlaying.position) });
+    }
+  }
+
+  async componentWillReceiveProps(nextProps: Props) {
+    if(nextProps.trackIndex !== this.props.trackIndex || nextProps.playlistIndex !== this.props.playlistIndex) {
+      clearInterval(this.intervalId);
+      const currentlyPlaying = await Spotify.getPlaybackStateAsync();
+      if(currentlyPlaying && this.props.playing) {
+        this.setState({ currentPosition: Math.floor(currentlyPlaying.position) }, this.songTicker);
+      }
+      else if(currentlyPlaying && !this.props.playing) {
+        this.setState({ currentPosition: Math.floor(currentlyPlaying.position) });
+      }
     }
   }
 
@@ -125,30 +153,41 @@ class PlayerScreen extends Component<Props, State> {
     }
   }
 
-  onForward() {
-    if (this.props.trackIndex < this.props.tracks.length - 1) {
+  onForward(trackFinished) {
+    if(trackFinished && this.props.repeatTrack) {
       clearInterval(this.intervalId);
-      this.props.playTrack(this.props.tracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1, this.props.playlistIndex);
+      this.props.playTrack(this.props.playingTracks[this.props.trackIndex].track, this.props.trackIndex, this.props.playlistIndex);
       this.setState({
         currentPosition: 0,
         sliding: false
       }, this.songTicker);
     }
     else {
-      clearInterval(this.intervalId);
-      this.props.playTrack(this.props.tracks[0].track, 0, this.props.playlistIndex);
-      this.setState({
-        currentPosition: 0,
-        sliding: false
-      }, this.songTicker);
+      if (this.props.trackIndex < this.props.tracks.length - 1) {
+        clearInterval(this.intervalId);
+        this.props.playTrack(this.props.playingTracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1, this.props.playlistIndex);
+        this.setState({
+          currentPosition: 0,
+          sliding: false
+        }, this.songTicker);
+      }
+      else {
+        clearInterval(this.intervalId);
+        this.props.playTrack(this.props.playingTracks[0].track, 0, this.props.playlistIndex);
+        this.setState({
+          currentPosition: 0,
+          sliding: false
+        }, this.songTicker);
+      }
     }
   }
 
   onRepeat() {
-    console.log("clicked repeat")
+    this.props.setRepeat(!this.props.repeatTrack);
   }
 
   onShuffle() {
+    this.props.shuffleTracks();
     this.setState({ toastVisible: true, toastMessage: "Playlist Shuffled" }, () => { this.hideToast(); });
   }
 
@@ -158,8 +197,22 @@ class PlayerScreen extends Component<Props, State> {
     });
   };
 
+  changeTrackCard() {
+    Animated.stagger(100, [
+      Animated.timing(this.state.fadeFront, {
+        toValue: this.state.showTracks ? 1 : 0,
+        duration: 1000
+      }),
+      Animated.timing(this.state.fadeBack, {
+        toValue: this.state.showTracks ? 0 : 1,
+        duration: 1000
+      })
+    ]).start();
+    this.setState({ showTracks: !this.state.showTracks });
+  }
+
   render () {
-    const { track, playing, tracks, trackIndex, playlists, playlistIndex } = this.props;
+    const { track, playing, tracks, trackIndex, playlists, playlistIndex, playingTracks, repeatTrack } = this.props;
     const totalTracks = tracks.length;
     const trackLength = track.duration_ms/1000;
     const artist = track.artists.map((artist) => { return artist.name; }).join(", ");
@@ -171,10 +224,21 @@ class PlayerScreen extends Component<Props, State> {
           playlistName={playlistName}
           totalTracks={totalTracks}
           currentTrack={trackIndex + 1}
+          showTracks={this.state.showTracks}
+          changeTrackCard={this.changeTrackCard.bind(this)}
         />
-        <AlbumArt
-          url={track.album.images[0].url}
-        />
+        <View>
+          <Animated.View style={[styles.flipCard, { opacity: this.state.fadeFront }]}>
+            <AlbumArt
+              url={track.album.images[0].url}
+            />
+          </Animated.View>
+          <Animated.View style={[styles.flipCard, styles.flipCardBack, { opacity: this.state.fadeBack }]}>
+            <TrackList
+              tracks={playingTracks}
+            />
+          </Animated.View>
+        </View>
         <TrackDetails
           title={track.name}
           artist={artist}
@@ -188,6 +252,7 @@ class PlayerScreen extends Component<Props, State> {
         />
         <Controls
           playing={playing}
+          repeatTrack={repeatTrack}
           onPressPause={() => this.togglePlaying(false)}
           onPressPlay={() => this.togglePlaying(true)}
           onBack={this.onBack.bind(this)}
@@ -207,10 +272,14 @@ const mapStateToProps = (state) => ({
   track: state.player.track,
   trackIndex: state.player.trackIndex,
   playlistIndex: state.player.playlistIndex,
-  playingTracks: state.player.playingTracks
+  playingTracks: state.player.playingTracks,
+  repeatTrack: state.player.repeat
 });
 
-export default connect(mapStateToProps, { playTrack, togglePlaying })(PlayerScreen);
+export default connect(mapStateToProps, { playTrack, togglePlaying, shuffleTracks, setRepeat })(PlayerScreen);
+
+const { width, height } = Dimensions.get('window');
+const imageSize = width - 48;
 
 const styles = StyleSheet.create({
   container: {
@@ -218,5 +287,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#191414',
     justifyContent: 'space-around',
     paddingBottom: 225
-  }
+  },
+  flipCard: {
+    width: imageSize,
+    height: imageSize,
+    backfaceVisibility: 'hidden',
+  },
+  flipCardBack: {
+    position: "absolute",
+    top: 0,
+    left: 24
+  },
 });

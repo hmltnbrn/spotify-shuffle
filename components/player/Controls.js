@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   playing: boolean,
+  repeatTrack: boolean,
   onPressPause: () => void,
   onPressPlay: () => void,
   onBack: () => void,
@@ -24,11 +25,11 @@ type Props = {
 
 class Controls extends Component<Props> {
   render () {
-    const { playing } = this.props || true;
+    const { playing, repeatTrack } = this.props || true;
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.props.onRepeat()} >
-          <Icon name="repeat" size={20} color={"#ffffff"} />
+          <Icon name="repeat" size={20} color={repeatTrack ? "#1db954" : "#ffffff"} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.props.onBack()}>
           <Icon name="skip-previous" size={50} color={"#ffffff"} />

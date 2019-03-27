@@ -117,9 +117,7 @@ class PlaylistsScreen extends Component<Props, State> {
               </TouchableHighlight>
             );
           }}
-          keyExtractor={(item, index) => {
-            return item.id == "null" || !item.id ? index.toString() : item.id
-          }}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
     );

@@ -16,7 +16,7 @@ type Props = {
   trackLength: number,
   onSlidingStart: () => void,
   onSeek: (time: number) => void,
-  onForward: () => void
+  onForward: (trackFinished?: boolean) => void
 };
 
 const pad = (n, width) => {
@@ -31,8 +31,8 @@ const minutesAndSeconds = (position) => ([
 class SeekBar extends Component<Props> {
 
   componentWillReceiveProps(nextProps: Props) {
-    if(nextProps.currentPosition === Math.round(nextProps.trackLength)) {
-      this.props.onForward();
+    if(nextProps.currentPosition >= Math.round(nextProps.trackLength)) {
+      this.props.onForward(true);
     }
   }
 

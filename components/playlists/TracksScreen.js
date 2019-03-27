@@ -96,9 +96,7 @@ class TracksScreen extends Component<Props, State> {
               </TouchableHighlight>
             );
           }}
-          keyExtractor={(item, index) => {
-            return item.track.id == "null" || !item.track.id ? index.toString() : item.track.id
-          }}
+          keyExtractor={(item, index) => index.toString()}
         />
         </View>
       );
