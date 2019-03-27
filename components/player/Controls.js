@@ -30,11 +30,9 @@ class Controls extends Component<Props> {
         <TouchableOpacity onPress={() => this.props.onRepeat()} >
           <Icon name="repeat" size={20} color={"#ffffff"} />
         </TouchableOpacity>
-        <View style={{width: 40}} />
         <TouchableOpacity onPress={() => this.props.onBack()}>
           <Icon name="skip-previous" size={50} color={"#ffffff"} />
         </TouchableOpacity>
-        <View style={{width: 20}} />
         {playing ?
           <TouchableOpacity onPress={() => this.props.onPressPause()}>
             <View style={styles.playButton}>
@@ -47,11 +45,9 @@ class Controls extends Component<Props> {
             </View>
           </TouchableOpacity>
         }
-        <View style={{width: 20}} />
         <TouchableOpacity onPress={() => this.props.onForward()} >
           <Icon name="skip-next" size={50} color={"#ffffff"} />
         </TouchableOpacity>
-        <View style={{width: 40}} />
         <TouchableOpacity onPress={() => this.props.onShuffle()} >
           <Icon name="shuffle" size={20} color={"#ffffff"} />
         </TouchableOpacity>
@@ -66,8 +62,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: 8
+    justifyContent: 'space-around',
+    paddingTop: 8,
+    paddingHorizontal: 10
   },
   playButton: {
     alignItems: 'center',

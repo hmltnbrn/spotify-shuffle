@@ -7,6 +7,7 @@ import {
   SEARCH_PLAYLISTS,
   SHUFFLE_TRACKS
 } from './actions';
+import shuffle from '../../helpers/shuffle';
 
 const initialState = {
   playlists: [],
@@ -64,17 +65,5 @@ const playlistReducer = function(state = initialState, action) {
       return state;
   }
 };
-
-// Fisher-Yates shuffle algorithm
-function shuffle(array) {
-  var m = array.length, t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = array[m];
-    array[m] = array[i];
-    array[i] = t;
-  }
-  return array;
-}
 
 export default playlistReducer;

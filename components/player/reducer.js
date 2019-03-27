@@ -8,7 +8,8 @@ const initialState = {
   playing: false,
   track: {},
   trackIndex: 0,
-  playlistIndex: 0
+  playlistIndex: 0,
+  playingTracks: []
 };
 
 const playerReducer = function(state = initialState, action) {
@@ -20,7 +21,8 @@ const playerReducer = function(state = initialState, action) {
         playing: true,
         track: action.payload.track,
         trackIndex: action.payload.trackIndex,
-        playlistIndex: action.payload.playlistIndex
+        playlistIndex: action.payload.playlistIndex,
+        playingTracks: action.payload.playingTracks || state.playingTracks
       };
     case TOGGLE_PLAYING:
       return {

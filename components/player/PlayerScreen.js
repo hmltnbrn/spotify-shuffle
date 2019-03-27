@@ -12,6 +12,8 @@ import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 import { playTrack, togglePlaying } from './actions';
 
+import Toast from '../local/Toast';
+
 import Header from './Header';
 import AlbumArt from './AlbumArt';
 import TrackDetails from './TrackDetails';
@@ -25,13 +27,16 @@ type Props = {
   track: Object,
   trackIndex: number,
   playlistIndex: number,
-  playTrack: (track: Object, trackIndex: number, playlistIndex: number) => void,
+  playingTracks: Array<any>,
+  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
   togglePlaying: (playing: boolean) => void => void
 };
 
 type State = {
   currentPosition: number,
-  sliding: boolean
+  sliding: boolean,
+  toastVisible: boolean,
+  toastMessage: string
 };
 
 class PlayerScreen extends Component<Props, State> {
@@ -41,7 +46,9 @@ class PlayerScreen extends Component<Props, State> {
 
   state = {
     currentPosition: 0,
-    sliding: false
+    sliding: false,
+    toastVisible: false,
+    toastMessage: ""
   };
 
   intervalId: IntervalID;
@@ -50,6 +57,9 @@ class PlayerScreen extends Component<Props, State> {
     const currentlyPlaying = await Spotify.getPlaybackStateAsync();
     if(currentlyPlaying && this.props.playing) {
       this.setState({ currentPosition: Math.floor(currentlyPlaying.position) }, this.songTicker);
+    }
+    else if(currentlyPlaying && !this.props.playing) {
+      this.setState({ currentPosition: Math.floor(currentlyPlaying.position) });
     }
   }
 
@@ -139,8 +149,14 @@ class PlayerScreen extends Component<Props, State> {
   }
 
   onShuffle() {
-    console.log("clicked shuffle")
+    this.setState({ toastVisible: true, toastMessage: "Playlist Shuffled" }, () => { this.hideToast(); });
   }
+
+  hideToast = () => {
+    this.setState({
+      toastVisible: false,
+    });
+  };
 
   render () {
     const { track, playing, tracks, trackIndex, playlists, playlistIndex } = this.props;
@@ -150,6 +166,7 @@ class PlayerScreen extends Component<Props, State> {
     const playlistName = playlists[playlistIndex].name;
     return (
       <View style={styles.container}>
+        <Toast visible={this.state.toastVisible} message={this.state.toastMessage} />
         <Header
           playlistName={playlistName}
           totalTracks={totalTracks}
@@ -189,7 +206,8 @@ const mapStateToProps = (state) => ({
   playing: state.player.playing,
   track: state.player.track,
   trackIndex: state.player.trackIndex,
-  playlistIndex: state.player.playlistIndex
+  playlistIndex: state.player.playlistIndex,
+  playingTracks: state.player.playingTracks
 });
 
 export default connect(mapStateToProps, { playTrack, togglePlaying })(PlayerScreen);
@@ -197,6 +215,8 @@ export default connect(mapStateToProps, { playTrack, togglePlaying })(PlayerScre
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#191414'
+    backgroundColor: '#191414',
+    justifyContent: 'space-around',
+    paddingBottom: 225
   }
 });

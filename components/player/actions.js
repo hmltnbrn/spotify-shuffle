@@ -4,12 +4,12 @@ import Spotify from 'rn-spotify-sdk';
 export const SET_TRACK = 'SET_TRACK';
 export const TOGGLE_PLAYING = 'TOGGLE_PLAYING';
 
-export const playTrack = (track, trackIndex, playlistIndex) => async dispatch => {
+export const playTrack = (track, trackIndex, playlistIndex, playingTracks) => async dispatch => {
   try {
     await Spotify.playURI(track.uri, 0, 0);
     dispatch({
       type: SET_TRACK,
-      payload: { track, trackIndex, playlistIndex }
+      payload: { track, trackIndex, playlistIndex, playingTracks }
     });
   } catch(err) {
     console.error(err)

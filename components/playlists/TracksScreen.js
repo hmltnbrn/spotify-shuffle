@@ -23,7 +23,7 @@ type Props = {
   tracks: Array<any>,
   getPlaylistTracks: (id: string, totalTracks: string) => void,
   shuffleTracks: () => void,
-  playTrack: (track: Object, trackIndex: number, playlistIndex: number) => void,
+  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
   navigation: NavigationScreenProp<NavigationState>
 };
 
@@ -49,12 +49,12 @@ class TracksScreen extends Component<Props, State> {
 
   playTrack = (track, index) => {
     console.log(track)
-    this.props.playTrack(track, index, this.state.playlistIndex);
+    this.props.playTrack(track, index, this.state.playlistIndex, this.props.tracks);
   }
 
   render() {
     const { tracks } = this.props;
-    console.log(tracks)
+    // console.log(tracks)
     return (
       <View style={styles.container}>
         <View style={styles.topContainer}>
@@ -66,7 +66,7 @@ class TracksScreen extends Component<Props, State> {
           </View>
         </View>
         <FlatList
-          contentContainerStyle={{ padding: 20 }}
+          contentContainerStyle={{ padding: 20, paddingBottom: 100 }}
           data={tracks}
           renderItem={({item, index}) => {
             let imageView = item.track.album.images.length > 0 ? (

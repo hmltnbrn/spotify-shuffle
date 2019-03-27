@@ -89,7 +89,7 @@ class PlaylistsScreen extends Component<Props, State> {
           </View>
         </View>
         <FlatList
-          contentContainerStyle={{ paddingTop: 65 }}
+          contentContainerStyle={{ paddingTop: 65, paddingBottom: 100 }}
           data={playlists}
           renderItem={({item, index}) => {
             let imageView = item.images.length > 0 ? (
