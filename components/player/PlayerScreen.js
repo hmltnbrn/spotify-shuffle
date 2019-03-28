@@ -97,12 +97,20 @@ class PlayerScreen extends Component<Props, State> {
 
   async seek(time) {
     time = Math.round(time);
-    const seeking = await Spotify.seek(time);
+    await Spotify.seek(time);
     this.setState({
       currentPosition: time,
       sliding: false
     }, this.songTicker);
     this.togglePlaying(true);
+  }
+
+  async restartTrack() {
+    clearInterval(this.intervalId);
+    await Spotify.seek(0);
+    this.setState({
+      currentPosition: 0
+    }, this.songTicker);
   }
 
   onSliding() {
@@ -236,6 +244,7 @@ class PlayerScreen extends Component<Props, State> {
           <Animated.View style={[styles.flipCard, styles.flipCardBack, { opacity: this.state.fadeBack }]}>
             <TrackList
               tracks={playingTracks}
+              restartTrack={this.restartTrack.bind(this)}
             />
           </Animated.View>
         </View>
@@ -291,11 +300,11 @@ const styles = StyleSheet.create({
   flipCard: {
     width: imageSize,
     height: imageSize,
-    backfaceVisibility: 'hidden',
+    backfaceVisibility: 'hidden'
   },
   flipCardBack: {
     position: "absolute",
     top: 0,
     left: 24
-  },
+  }
 });
