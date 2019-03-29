@@ -94,6 +94,7 @@ class PlayerOverlay extends Component<Props, State> {
 }
 
 const mapStateToProps = (state) => ({
+  player: state.player,
   active: state.player.active
 });
 

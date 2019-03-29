@@ -2,18 +2,22 @@ import {
   SET_TRACK,
   TOGGLE_PLAYING,
   SHUFFLE_TRACKS,
-  SET_REPEAT
+  SET_REPEAT,
+  SAVE_PLAYER_STATE,
+  GET_SAVED_PLAYER_STATE
 } from './actions';
 import shuffle from '../../helpers/shuffle';
+import * as storage from '../../helpers/storage';
 
 const initialState = {
   active: false,
   playing: false,
+  repeat: false,
+  currentPosition: 0,
+  queueName: "",
+  queueTracks: [],
   track: {},
-  trackIndex: 0,
-  playlistIndex: 0,
-  playingTracks: [],
-  repeat: false
+  trackIndex: 0
 };
 
 const playerReducer = function(state = initialState, action) {
@@ -22,11 +26,12 @@ const playerReducer = function(state = initialState, action) {
       return {
         ...state,
         active: true,
-        playing: true,
+        playing: action.payload.playState === false ? false : true,
+        currentPosition: action.payload.position || 0,
+        queueName: action.payload.queueName || state.queueName,
+        queueTracks: action.payload.queueTracks || state.queueTracks,
         track: action.payload.track,
-        trackIndex: action.payload.trackIndex,
-        playlistIndex: action.payload.playlistIndex,
-        playingTracks: action.payload.playingTracks || state.playingTracks
+        trackIndex: action.payload.trackIndex
       };
     case TOGGLE_PLAYING:
       return {
@@ -34,12 +39,12 @@ const playerReducer = function(state = initialState, action) {
         playing: action.payload
       };
     case SHUFFLE_TRACKS:
-      let newTracks = state.playingTracks.slice();
+      let newTracks = state.queueTracks.slice();
       let removedTrack = newTracks.splice(state.trackIndex, 1);
       return {
         ...state,
         trackIndex: 0,
-        playingTracks: [...removedTrack, ...shuffle(newTracks)]
+        queueTracks: [...removedTrack, ...shuffle(newTracks)]
       };
     case SET_REPEAT:
       return {

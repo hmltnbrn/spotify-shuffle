@@ -90,7 +90,10 @@ class PlaylistsScreen extends Component<Props, State> {
         </View>
         <FlatList
           contentContainerStyle={{ paddingTop: 65, paddingBottom: 100 }}
+          columnWrapperStyle={{ justifyContent: 'space-around'}}
           data={playlists}
+          horizontal={false}
+          numColumns={2}
           renderItem={({item, index}) => {
             let imageView = item.images.length > 0 ? (
               <Image
@@ -100,7 +103,7 @@ class PlaylistsScreen extends Component<Props, State> {
               /> ) : (
               <View style={[styles.playlistImage, styles.missingImage]}>
                 <Image
-                  style={{width: 200, height: 200}}
+                  style={{width: 75, height: 75}}
                   source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
                 />
               </View>
@@ -174,20 +177,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    marginVertical: 10,
+    margin: 10,
     elevation: 3,
-    width: 300,
+    width: 150,
     backgroundColor: '#000000',
     borderRadius: 3,
     overflow: 'hidden'
   },
   playlistImage: {
-    width: 300,
-    height: 300,
+    width: 150,
+    height: 150,
   },
   playlistImageCard: {
     backgroundColor: '#ffffff',
-    width: 300
+    width: 150
   },
   missingImage: {
     backgroundColor: '#1db954',
@@ -195,7 +198,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   playlistText: {
-    fontSize: 20,
+    fontSize: 17,
     color: '#000000',
     margin: 6
   },

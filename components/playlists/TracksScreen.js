@@ -16,19 +16,19 @@ import { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
-import { getPlaylistTracks, shuffleTracks } from './actions';
+import { getPlaylistTracks } from './actions';
 import { playTrack } from '../player/actions';
 
 type Props = {
   tracks: Array<any>,
   getPlaylistTracks: (id: string, totalTracks: string) => void,
-  shuffleTracks: () => void,
-  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
+  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void,
   navigation: NavigationScreenProp<NavigationState>
 };
 
 type State = {
-  playlistIndex: number
+  playlistIndex: number,
+  playlistName: string
 };
 
 class TracksScreen extends Component<Props, State> {
@@ -39,30 +39,37 @@ class TracksScreen extends Component<Props, State> {
   };
 
   state = {
-    playlistIndex: 0
+    playlistIndex: 0,
+    playlistName: ""
   };
 
   componentDidMount() {
     this.props.getPlaylistTracks(this.props.navigation.getParam('playlistId'), this.props.navigation.getParam('playlistTracksTotal'));
-    this.setState({ playlistIndex: this.props.navigation.getParam('playlistIndex') });
+    this.setState({
+      playlistIndex: this.props.navigation.getParam('playlistIndex'),
+      playlistName: this.props.navigation.getParam('playlistName')
+    });
   }
 
   playTrack = (track, index) => {
     console.log(track)
-    this.props.playTrack(track, index, this.state.playlistIndex, this.props.tracks);
+    this.props.playTrack(track, index, this.state.playlistName, this.props.tracks);
   }
 
   render() {
     const { tracks } = this.props;
-    // console.log(tracks)
     return (
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <View style={styles.buttonContainer}>
             <Text>{`${tracks.length} ${tracks.length === 1 ? "track" : "tracks"}`}</Text>
-            <TouchableHighlight onPress={() => this.props.shuffleTracks()} underlayColor="#fafafa">
-              <Icon name="shuffle" size={25} color={"#000000"} />
-            </TouchableHighlight>
+            <View style={styles.bigPlayButton}>
+              <View style={styles.innerPlayButton}>
+                <TouchableHighlight onPress={() => this.playTrack(tracks[0].track, 0)} underlayColor="#fafafa">
+                  <Icon name="play-circle-filled" size={50} color={"#1db954"} />
+                </TouchableHighlight>
+              </View>
+            </View>
           </View>
         </View>
         <FlatList
@@ -98,16 +105,16 @@ class TracksScreen extends Component<Props, State> {
           }}
           keyExtractor={(item, index) => index.toString()}
         />
-        </View>
-      );
-    }
+      </View>
+    );
   }
+}
 
 const mapStateToProps = (state) => ({
   tracks: state.playlists.tracks
 });
 
-export default connect(mapStateToProps, { getPlaylistTracks, shuffleTracks, playTrack })(TracksScreen);
+export default connect(mapStateToProps, { getPlaylistTracks, playTrack })(TracksScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -121,10 +128,30 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    padding: 10
+    paddingVertical: 10,
+    paddingHorizontal: 60
+  },
+  bigPlayButton: {
+    position: 'absolute',
+    top: 10,
+    left: '100%',
+    elevation: 3,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    overflow: 'hidden'
+  },
+  innerPlayButton: {
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
   },
   trackContainer: {
     alignItems: 'stretch',

@@ -24,16 +24,14 @@ import Controls from './Controls';
 import SeekBar from './SeekBar';
 
 type Props = {
-  playlists: Array<any>,
-  tracks: Array<any>,
   playing: boolean,
   track: Object,
   trackIndex: number,
-  playlistIndex: number,
-  playingTracks: Array<any>,
+  queueName: string,
+  queueTracks: Array<any>,
   repeatTrack: boolean,
-  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
-  togglePlaying: (playing: boolean) => void => void,
+  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void,
+  togglePlaying: (playState: boolean) => void => void,
   shuffleTracks: () => void,
   setRepeat: (repeat: boolean) => void
 };
@@ -79,7 +77,7 @@ class PlayerScreen extends Component<Props, State> {
   }
 
   async componentWillReceiveProps(nextProps: Props) {
-    if(nextProps.trackIndex !== this.props.trackIndex || nextProps.playlistIndex !== this.props.playlistIndex) {
+    if(nextProps.trackIndex !== this.props.trackIndex || nextProps.queueName !== this.props.queueName) {
       clearInterval(this.intervalId);
       const currentlyPlaying = await Spotify.getPlaybackStateAsync();
       if(currentlyPlaying && this.props.playing) {
@@ -146,7 +144,7 @@ class PlayerScreen extends Component<Props, State> {
   async onBack() {
     if (this.state.currentPosition < 10 && this.props.trackIndex > 0) {
       clearInterval(this.intervalId);
-      this.props.playTrack(this.props.tracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1, this.props.playlistIndex);
+      this.props.playTrack(this.props.queueTracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1);
       this.setState({
         currentPosition: 0,
         sliding: false
@@ -164,16 +162,16 @@ class PlayerScreen extends Component<Props, State> {
   onForward(trackFinished) {
     if(trackFinished && this.props.repeatTrack) {
       clearInterval(this.intervalId);
-      this.props.playTrack(this.props.playingTracks[this.props.trackIndex].track, this.props.trackIndex, this.props.playlistIndex);
+      this.props.playTrack(this.props.queueTracks[this.props.trackIndex].track, this.props.trackIndex);
       this.setState({
         currentPosition: 0,
         sliding: false
       }, this.songTicker);
     }
     else {
-      if (this.props.trackIndex < this.props.tracks.length - 1) {
+      if (this.props.trackIndex < this.props.queueTracks.length - 1) {
         clearInterval(this.intervalId);
-        this.props.playTrack(this.props.playingTracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1, this.props.playlistIndex);
+        this.props.playTrack(this.props.queueTracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1);
         this.setState({
           currentPosition: 0,
           sliding: false
@@ -181,7 +179,7 @@ class PlayerScreen extends Component<Props, State> {
       }
       else {
         clearInterval(this.intervalId);
-        this.props.playTrack(this.props.playingTracks[0].track, 0, this.props.playlistIndex);
+        this.props.playTrack(this.props.queueTracks[0].track, 0);
         this.setState({
           currentPosition: 0,
           sliding: false
@@ -220,16 +218,18 @@ class PlayerScreen extends Component<Props, State> {
   }
 
   render () {
-    const { track, playing, tracks, trackIndex, playlists, playlistIndex, playingTracks, repeatTrack } = this.props;
-    const totalTracks = tracks.length;
+    const { track, playing, trackIndex, queueName, queueTracks, repeatTrack } = this.props;
+    const totalTracks = queueTracks.length;
     const trackLength = track.duration_ms/1000;
     const artist = track.artists.map((artist) => { return artist.name; }).join(", ");
-    const playlistName = playlists[playlistIndex].name;
     return (
       <View style={styles.container}>
-        <Toast visible={this.state.toastVisible} message={this.state.toastMessage} />
+        <Toast
+          visible={this.state.toastVisible}
+          message={this.state.toastMessage}
+        />
         <Header
-          playlistName={playlistName}
+          playlistName={queueName}
           totalTracks={totalTracks}
           currentTrack={trackIndex + 1}
           showTracks={this.state.showTracks}
@@ -243,7 +243,7 @@ class PlayerScreen extends Component<Props, State> {
           </Animated.View>
           <Animated.View style={[styles.flipCard, styles.flipCardBack, { opacity: this.state.fadeBack }]}>
             <TrackList
-              tracks={playingTracks}
+              tracks={queueTracks}
               restartTrack={this.restartTrack.bind(this)}
             />
           </Animated.View>
@@ -275,13 +275,11 @@ class PlayerScreen extends Component<Props, State> {
 }
 
 const mapStateToProps = (state) => ({
-  playlists: state.playlists.playlists,
-  tracks: state.playlists.tracks,
   playing: state.player.playing,
+  queueName: state.player.queueName,
+  queueTracks: state.player.queueTracks,
   track: state.player.track,
   trackIndex: state.player.trackIndex,
-  playlistIndex: state.player.playlistIndex,
-  playingTracks: state.player.playingTracks,
   repeatTrack: state.player.repeat
 });
 

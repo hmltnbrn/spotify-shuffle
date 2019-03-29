@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1db954',
     padding: 20
   },
-    spotifyLoginButton: {
+  spotifyLoginButton: {
     justifyContent: 'center',
     backgroundColor: '#191414',
     overflow: 'hidden',
@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
     margin: 20,
     elevation: 3
   },
-    spotifyLoginButtonText: {
+  spotifyLoginButtonText: {
     fontSize: 20,
     textAlign: 'center',
     color: 'white'
   },
-    greeting: {
+  greeting: {
     fontSize: 30,
     textAlign: 'center',
     margin: 10,

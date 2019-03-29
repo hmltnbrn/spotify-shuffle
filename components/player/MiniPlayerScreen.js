@@ -18,14 +18,13 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   playing: boolean,
-  playingTracks: Array<any>,
-  tracks: Array<any>,
+  queueName: string,
+  queueTracks: Array<any>,
   track: Object,
   trackIndex: number,
-  playlistIndex: number,
   repeatTrack: boolean,
-  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
-  togglePlaying: (playing: boolean) => void => void
+  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void,
+  togglePlaying: (playState: boolean) => void => void
 };
 
 type State = {
@@ -50,7 +49,7 @@ class MiniPlayerScreen extends Component<Props, State> {
   }
 
   async componentWillReceiveProps(nextProps: Props) {
-    if(nextProps.trackIndex !== this.props.trackIndex || nextProps.playlistIndex !== this.props.playlistIndex) {
+    if(nextProps.trackIndex !== this.props.trackIndex || nextProps.queueName !== this.props.queueName) {
       clearInterval(this.intervalId);
       const currentlyPlaying = await Spotify.getPlaybackStateAsync();
       if(currentlyPlaying && this.props.playing) {
@@ -94,22 +93,22 @@ class MiniPlayerScreen extends Component<Props, State> {
   onForward() {
     if(this.props.repeatTrack) {
       clearInterval(this.intervalId);
-      this.props.playTrack(this.props.playingTracks[this.props.trackIndex].track, this.props.trackIndex, this.props.playlistIndex);
+      this.props.playTrack(this.props.queueTracks[this.props.trackIndex].track, this.props.trackIndex);
       this.setState({
         currentPosition: 0
       }, this.songTicker);
     }
     else {
-      if (this.props.trackIndex < this.props.tracks.length - 1) {
+      if (this.props.trackIndex < this.props.queueTracks.length - 1) {
         clearInterval(this.intervalId);
-        this.props.playTrack(this.props.playingTracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1, this.props.playlistIndex);
+        this.props.playTrack(this.props.queueTracks[this.props.trackIndex + 1].track, this.props.trackIndex + 1);
         this.setState({
           currentPosition: 0
         }, this.songTicker);
       }
       else {
         clearInterval(this.intervalId);
-        this.props.playTrack(this.props.playingTracks[0].track, 0, this.props.playlistIndex);
+        this.props.playTrack(this.props.queueTracks[0].track, 0);
         this.setState({
           currentPosition: 0
         }, this.songTicker);
@@ -167,11 +166,10 @@ class MiniPlayerScreen extends Component<Props, State> {
 
 const mapStateToProps = (state) => ({
   playing: state.player.playing,
-  playingTracks: state.player.playingTracks,
-  tracks: state.playlists.tracks,
+  queueName: state.player.queueName,
+  queueTracks: state.player.queueTracks,
   track: state.player.track,
   trackIndex: state.player.trackIndex,
-  playlistIndex: state.player.playlistIndex,
   repeatTrack: state.player.repeat
 });
 

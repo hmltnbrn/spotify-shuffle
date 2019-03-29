@@ -15,10 +15,16 @@ import Spotify from 'rn-spotify-sdk';
 import Config from 'react-native-config';
 import { connect } from 'react-redux';
 import { setUserDetails } from './actions';
+import { playTrack } from '../player/actions';
 
 type Props = {
+  queueName: string,
+  queueTracks: Array<any>,
+  trackIndex: number,
+  currentPosition: number,
   navigation: NavigationScreenProp<NavigationState>,
-  setUserDetails: () => void
+  setUserDetails: () => void,
+  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void
 };
 
 type State = {
@@ -52,6 +58,7 @@ class SplashScreen extends PureComponent<Props, State> {
       });
       if(loggedIn) {
         this.props.setUserDetails();
+        this.startTrack();
         this.goToPlaylists();
       }
       else {
@@ -64,6 +71,7 @@ class SplashScreen extends PureComponent<Props, State> {
       });
       if(await Spotify.isLoggedInAsync()) {
         this.props.setUserDetails();
+        this.startTrack();
         this.goToPlaylists();
       }
       else {
@@ -78,6 +86,12 @@ class SplashScreen extends PureComponent<Props, State> {
     });
   }
 
+  startTrack() {
+    if(this.props.queueTracks.length > 0) {
+      this.props.playTrack(this.props.queueTracks[this.props.trackIndex].track, this.props.trackIndex, null, null, this.props.currentPosition, false);
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -89,7 +103,14 @@ class SplashScreen extends PureComponent<Props, State> {
   }
 }
 
-export default connect(null, { setUserDetails })(SplashScreen);
+const mapStateToProps = (state) => ({
+  queueName: state.player.queueName,
+  queueTracks: state.player.queueTracks,
+  trackIndex: state.player.trackIndex,
+  currentPosition: state.player.currentPosition
+});
+
+export default connect(mapStateToProps, { setUserDetails, playTrack })(SplashScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -21,9 +21,8 @@ import { playTrack } from './actions';
 
 type Props = {
   tracks: Array<any>,
-  playlistIndex: number,
   trackIndex: number,
-  playTrack: (track: Object, trackIndex: number, playlistIndex: number, playingTracks?: Array<any>) => void,
+  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void,
   restartTrack: () => void
 };
 
@@ -31,7 +30,7 @@ class TrackList extends Component<Props> {
 
   playTrack = (track, index) => {
     if(this.props.trackIndex === index) this.props.restartTrack();
-    else this.props.playTrack(track, index, this.props.playlistIndex);
+    else this.props.playTrack(track, index);
   }
 
   render () {
@@ -89,8 +88,7 @@ class TrackList extends Component<Props> {
 }
 
 const mapStateToProps = (state) => ({
-  trackIndex: state.player.trackIndex,
-  playlistIndex: state.player.playlistIndex
+  trackIndex: state.player.trackIndex
 });
 
 export default connect(mapStateToProps, { playTrack })(TrackList);
