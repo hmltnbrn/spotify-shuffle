@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#191414',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   },
   contentWrapper: {
     flexDirection: 'row',

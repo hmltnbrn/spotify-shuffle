@@ -6,8 +6,8 @@ export const SET_ERROR = 'SET_ERROR';
 export const GET_PLAYLISTS = 'GET_PLAYLISTS';
 export const REQUEST_PLAYLIST_TRACKS = 'REQUEST_PLAYLIST_TRACKS';
 export const GET_PLAYLIST_TRACKS = 'GET_PLAYLIST_TRACKS';
+export const END_REQUEST_PLAYLIST_TRACKS = 'END_REQUEST_PLAYLIST_TRACKS';
 export const SEARCH_PLAYLISTS = 'SEARCH_PLAYLISTS';
-export const SHUFFLE_TRACKS = 'SHUFFLE_TRACKS';
 
 export const getAllPlaylists = () => async dispatch => {
   try {
@@ -23,14 +23,15 @@ export const getAllPlaylists = () => async dispatch => {
       payload: err
     });
   }
-}
+};
 
 export const getPlaylistTracks = (id, totalTracks) => async dispatch => {
   var offset = 0;
   var limit = 100;
   try {
     dispatch({
-      type: REQUEST_PLAYLIST_TRACKS
+      type: REQUEST_PLAYLIST_TRACKS,
+      payload: totalTracks
     });
     while(totalTracks > 0) {
       let res = await Spotify.sendRequest(`v1/playlists/${id}/tracks`, "get", { offset }, false);
@@ -42,8 +43,7 @@ export const getPlaylistTracks = (id, totalTracks) => async dispatch => {
       });
     }
     dispatch({
-      type: SET_LOADING,
-      payload: false
+      type: END_REQUEST_PLAYLIST_TRACKS
     });
   } catch(err) {
     console.error(err)
@@ -52,17 +52,11 @@ export const getPlaylistTracks = (id, totalTracks) => async dispatch => {
       payload: err
     });
   }
-}
+};
 
 export const searchPlaylists = (query) => async dispatch => {
   dispatch({
     type: SEARCH_PLAYLISTS,
     payload: query
   });
-}
-
-export const shuffleTracks = () => async dispatch => {
-  dispatch({
-    type: SHUFFLE_TRACKS
-  });
-}
+};

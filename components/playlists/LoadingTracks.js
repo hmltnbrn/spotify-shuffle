@@ -8,22 +8,34 @@ import type { Node } from 'react';
 import {
   View,
   StyleSheet,
-  ActivityIndicator
+  ProgressBarAndroid,
+  Text
 } from 'react-native';
 import { connect } from 'react-redux';
 
 type Props = {
-  children?: Node
+  children?: Node,
+  loading: boolean,
+  tracks: Array<any>,
+  totalTracks: number
 };
 
-class LoadingOverlay extends Component<Props> {
+class LoadingTracks extends Component<Props> {
   render () {
-    const loading = false;
+    const { loading, tracks, totalTracks } = this.props;
+    const progress = tracks.length/totalTracks;
     return (
       <View style={styles.container} pointerEvents={loading ? 'none' : 'auto'}>
         {loading ? (
           <View style={styles.loadingContainer} pointerEvents="none">
-            <ActivityIndicator size={100} color="#1db954"/>
+            <ProgressBarAndroid
+              styleAttr="Horizontal"
+              indeterminate={false}
+              progress={progress}
+              color="#1db954"
+              style={styles.progressBar}
+            />
+            <Text>Loading your songs...</Text>
           </View> ) : (
           <View></View>
         )}
@@ -33,9 +45,13 @@ class LoadingOverlay extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  loading: state.playlists.loadingTracks,
+  tracks: state.playlists.tracks,
+  totalTracks: state.playlists.requestingTracksTotal
+});
 
-export default connect(mapStateToProps)(LoadingOverlay);
+export default connect(mapStateToProps)(LoadingTracks);
 
 const styles = StyleSheet.create({
   container: {
@@ -54,5 +70,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 5,
     elevation: 5
+  },
+  progressBar: {
+    width: '80%'
   }
 });

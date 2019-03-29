@@ -4,16 +4,17 @@ import {
   GET_PLAYLISTS,
   REQUEST_PLAYLIST_TRACKS,
   GET_PLAYLIST_TRACKS,
-  SEARCH_PLAYLISTS,
-  SHUFFLE_TRACKS
+  END_REQUEST_PLAYLIST_TRACKS,
+  SEARCH_PLAYLISTS
 } from './actions';
-import shuffle from '../../helpers/shuffle';
 
 const initialState = {
   playlists: [],
   lastRetrieved: [],
   tracks: [],
+  requestingTracksTotal: 0,
   loading: false,
+  loadingTracks: false,
   error: ""
 };
 
@@ -39,7 +40,8 @@ const playlistReducer = function(state = initialState, action) {
     case REQUEST_PLAYLIST_TRACKS:
       return {
         ...state,
-        loading: true,
+        requestingTracksTotal: action.payload,
+        loadingTracks: true,
         error: "",
         tracks: []
       };
@@ -49,17 +51,16 @@ const playlistReducer = function(state = initialState, action) {
         error: "",
         tracks: [...state.tracks, ...action.payload]
       };
+    case END_REQUEST_PLAYLIST_TRACKS:
+      return {
+        ...state,
+        loadingTracks: false
+      };
     case SEARCH_PLAYLISTS:
       return {
         ...state,
         error: "",
         playlists: state.lastRetrieved.filter(playlist => playlist.name.toLowerCase().includes(action.payload.toLowerCase()))
-      };
-    case SHUFFLE_TRACKS:
-      return {
-        ...state,
-        error: "",
-        tracks: shuffle(state.tracks.slice())
       };
     default:
       return state;

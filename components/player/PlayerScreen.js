@@ -8,7 +8,8 @@ import {
   View,
   StyleSheet,
   Animated,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
@@ -207,11 +208,11 @@ class PlayerScreen extends Component<Props, State> {
     Animated.stagger(100, [
       Animated.timing(this.state.fadeFront, {
         toValue: this.state.showTracks ? 1 : 0,
-        duration: 1000
+        duration: 500
       }),
       Animated.timing(this.state.fadeBack, {
         toValue: this.state.showTracks ? 0 : 1,
-        duration: 1000
+        duration: 500
       })
     ]).start();
     this.setState({ showTracks: !this.state.showTracks });
@@ -224,6 +225,7 @@ class PlayerScreen extends Component<Props, State> {
     const artist = track.artists.map((artist) => { return artist.name; }).join(", ");
     return (
       <View style={styles.container}>
+        <View style={styles.contentWrapper}>
         <Toast
           visible={this.state.toastVisible}
           message={this.state.toastMessage}
@@ -269,6 +271,7 @@ class PlayerScreen extends Component<Props, State> {
           onRepeat={this.onRepeat.bind(this)}
           onShuffle={this.onShuffle.bind(this)}
         />
+        </View>
       </View>
     );
   }
@@ -285,19 +288,25 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, { playTrack, togglePlaying, shuffleTracks, setRepeat })(PlayerScreen);
 
-const { width, height } = Dimensions.get('window');
-const imageSize = width - 48;
+const Screen = {
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height
+};
+
+const cardSize = Screen.width - 48;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#191414',
+    backgroundColor: '#191414'
+  },
+  contentWrapper: {
     justifyContent: 'space-around',
-    paddingBottom: 225
+    height: Screen.height - 50
   },
   flipCard: {
-    width: imageSize,
-    height: imageSize,
+    width: cardSize,
+    height: cardSize,
     backfaceVisibility: 'hidden'
   },
   flipCardBack: {
