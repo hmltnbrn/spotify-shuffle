@@ -14,7 +14,7 @@ import {
   TextInput,
   StatusBar
 } from 'react-native';
-import { NavigationState, NavigationScreenProp } from 'react-navigation';
+import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';

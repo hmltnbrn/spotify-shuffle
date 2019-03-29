@@ -10,7 +10,7 @@ import {
   Text,
   View
 } from 'react-native';
-import { NavigationState, NavigationScreenProp } from 'react-navigation';
+import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
 import Config from 'react-native-config';
 import { connect } from 'react-redux';

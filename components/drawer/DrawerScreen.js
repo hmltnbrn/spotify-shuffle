@@ -4,7 +4,9 @@
  */
 
 import React, { Component } from 'react';
-import { NavigationActions, DrawerActions, NavigationState, NavigationScreenProp } from 'react-navigation';
+import type { NavigationState, NavigationScreenProp } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
+import { DrawerActions } from 'react-navigation-drawer';
 import {
   ScrollView,
   Text,

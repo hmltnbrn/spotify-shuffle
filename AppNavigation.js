@@ -13,9 +13,10 @@ import {
   createStackNavigator,
   createDrawerNavigator,
   createSwitchNavigator,
-  createAppContainer,
-  DrawerActions
+  createAppContainer
 } from 'react-navigation';
+import { DrawerActions } from 'react-navigation-drawer';
+import type { NavigationState } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import SplashScreen from './components/initial/SplashScreen.js';
@@ -81,9 +82,7 @@ const PrimaryNav = createSwitchNavigator({
   InitialScreens: { screen: InitialStack },
   MainScreens: { screen: MainStack }
 }, {
-  title: 'Main',
-  headerMode: 'none',
   initialRouteName: 'InitialScreens'
 });
 
-export default createAppContainer(PrimaryNav);
+export default createAppContainer<NavigationState, Object>(PrimaryNav);

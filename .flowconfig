@@ -19,6 +19,9 @@
 ; Ignore metro
 .*/node_modules/metro/.*
 
+; Ignore redux-persist errors
+.*/node_modules/redux-persist/.*
+
 [include]
 
 [libs]

@@ -12,7 +12,7 @@ import {
   Image,
   FlatList
 } from 'react-native';
-import { NavigationState, NavigationScreenProp } from 'react-navigation';
+import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ import { playTrack } from '../player/actions';
 
 type Props = {
   tracks: Array<any>,
-  getPlaylistTracks: (id: string, totalTracks: string) => void,
+  getPlaylistTracks: (id: ?string, totalTracks: ?string) => void,
   playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void,
   navigation: NavigationScreenProp<NavigationState>
 };

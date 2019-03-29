@@ -6,7 +6,9 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "devtools": "react-devtools",
     "test": "jest",
-    "flow": "flow"
+    "flow": "flow",
+    "flow-typed": "flow-typed install",
+    "create-stub": "flow-typed create-stub"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.2.2",
@@ -32,6 +34,7 @@
     "babel-jest": "24.5.0",
     "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.95.1",
+    "flow-typed": "^2.5.1",
     "jest": "24.5.0",
     "metro-react-native-babel-preset": "0.53.0",
     "react-devtools": "^3.6.1",

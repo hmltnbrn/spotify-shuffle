@@ -13,7 +13,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
-import { NavigationState, NavigationScreenProp } from 'react-navigation';
+import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 import { setUserDetails } from './actions';
