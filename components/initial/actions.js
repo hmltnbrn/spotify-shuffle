@@ -10,7 +10,7 @@ export const setUserDetails = () => async dispatch => {
     let res = await Spotify.getMe();
     dispatch({
       type: SET_USER_DETAILS,
-      payload: res.display_name
+      payload: res
     });
   } catch(err) {
     console.error(err)

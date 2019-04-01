@@ -25,7 +25,7 @@ class Header extends Component<Props> {
     const { playlistName, totalTracks, currentTrack, showTracks } = this.props;
     return (
       <View style={styles.container}>
-        <Icon name="arrow-drop-down" size={20} color={"#ffffff"} />
+        <Icon name="cast" size={25} color={"#ffffff"} />
         <View>
           <Text style={[styles.message, styles.playlistName]} numberOfLines={1} ellipsizeMode="tail">{playlistName}</Text>
           <Text style={styles.message}>{currentTrack} / {totalTracks}</Text>

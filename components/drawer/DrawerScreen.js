@@ -21,7 +21,8 @@ import { connect } from 'react-redux';
 
 type Props = {
   navigation: NavigationScreenProp<NavigationState>,
-  username: string
+  displayName: string,
+  email: string
 };
 
 class DrawerScreen extends Component<Props> {
@@ -48,7 +49,10 @@ class DrawerScreen extends Component<Props> {
             <View style={styles.topContainer}>
               <View style={styles.usernameContainer}>
                 <Icon name="person" size={25} color={"#ffffff"} />
-                <Text style={styles.usernameText}>{this.props.username}</Text>
+                <View>
+                  <Text style={[styles.usernameText, styles.displayNameText]}>{this.props.displayName}</Text>
+                  <Text style={styles.usernameText}>{this.props.email}</Text>
+                </View>
               </View>
             </View>
             <View>
@@ -69,7 +73,8 @@ class DrawerScreen extends Component<Props> {
 }
 
 const mapStateToProps = (state) => ({
-  username: state.user.username
+  displayName: state.user.displayName,
+  email: state.user.email
 });
 
 export default connect(mapStateToProps)(DrawerScreen);
@@ -93,6 +98,9 @@ const styles = StyleSheet.create({
   usernameText: {
     color: '#ffffff',
     paddingLeft: 30
+  },
+  displayNameText: {
+    fontWeight: 'bold'
   },
   menuItem: {
     flexDirection: 'row',

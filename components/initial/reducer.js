@@ -1,7 +1,8 @@
 import { SET_USER_DETAILS } from './actions';
 
 const initialState = {
-  username: ""
+  displayName: "",
+  email: ""
 };
 
 const userDetailsReducer = function(state = initialState, action) {
@@ -9,7 +10,8 @@ const userDetailsReducer = function(state = initialState, action) {
     case SET_USER_DETAILS:
       return {
         ...state,
-        username: action.payload
+        displayName: action.payload.display_name,
+        email: action.payload.email
       };
     default:
       return state;

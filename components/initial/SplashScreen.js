@@ -50,7 +50,9 @@ class SplashScreen extends PureComponent<Props, State> {
         "clientID": Config.CLIENT_ID,
         "sessionUserDefaultsKey": Config.SESSION_KEY,
         "redirectURL": Config.REDIRECT_URL,
-        "scopes": Config.SCOPES.split("|")
+        "scopes": Config.SCOPES.split("|"),
+        "tokenSwapURL": Config.TOKEN_SWAP_URL,
+        "tokenRefreshURL": Config.TOKEN_REFRESH_URL
       };
       const loggedIn = await Spotify.initialize(spotifyOptions);
       this.setState({

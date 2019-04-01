@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 import com.wix.interactable.Interactable;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -30,6 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
+      long size = 100 * 1024L * 1024L; // 100 MB
+      ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new AsyncStoragePackage(),
