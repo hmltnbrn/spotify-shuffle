@@ -18,21 +18,26 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
+import { setTitle } from '../header/actions';
 
 type Props = {
   navigation: NavigationScreenProp<NavigationState>,
   displayName: string,
-  email: string
+  email: string,
+  setTitle: (newTitle: string) => void
 };
 
-class DrawerScreen extends Component<Props> {
+class Drawer extends Component<Props> {
 
-  navigateToScreen = (route: string) => () => {
+  navigateToScreen = (route: string, setNewTitle?: boolean, newTitle?: string) => () => {
     const navigateAction = NavigationActions.navigate({
       routeName: route
     });
     this.props.navigation.dispatch(navigateAction);
     this.props.navigation.dispatch(DrawerActions.closeDrawer());
+    if(setNewTitle) {
+      this.props.setTitle(newTitle || route);
+    }
   }
 
   signOut() {
@@ -58,7 +63,7 @@ class DrawerScreen extends Component<Props> {
             <View>
               <View style={styles.menuItem}>
                 <Icon name="playlist-play" size={25} color={"#1db954"} />
-                <Text style={styles.menuText} onPress={this.navigateToScreen('Playlists')}>Playlists</Text>
+                <Text style={styles.menuText} onPress={this.navigateToScreen('Playlists', true)}>Playlists</Text>
               </View>
               <View style={styles.menuItem}>
                 <CommIcon name="logout" size={25} color={"#1db954"} />
@@ -77,7 +82,7 @@ const mapStateToProps = (state) => ({
   email: state.user.email
 });
 
-export default connect(mapStateToProps)(DrawerScreen);
+export default connect(mapStateToProps, { setTitle })(Drawer);
 
 const styles = StyleSheet.create({
   container: {

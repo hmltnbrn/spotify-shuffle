@@ -66,16 +66,19 @@ class TracksScreen extends Component<Props, State> {
         <View style={styles.container}>
           <View style={styles.topContainer}>
             <View style={styles.buttonContainer}>
-              <Text>{`${tracks.length} ${tracks.length === 1 ? "track" : "tracks"}`}</Text>
+              <View>
+                <Text style={styles.playlistNameText} numberOfLines={1} ellipsizeMode="tail">{this.state.playlistName}</Text>
+                <Text>{`${tracks.length} ${tracks.length === 1 ? "track" : "tracks"}`}</Text>
+              </View>
               <TouchableOpacity onPress={() => this.playTrack(tracks[0].track, 0)} style={styles.bigPlayButton}>
                 <View style={styles.innerPlayButton}>
-                  <Icon name="play-arrow" size={50} color={"#ffffff"} />
+                  <Icon name="play-arrow" size={35} color={"#ffffff"} />
                 </View>
               </TouchableOpacity>
             </View>
           </View>
           <FlatList
-            contentContainerStyle={{ paddingTop: 30, paddingBottom: 100, paddingHorizontal: 20 }}
+            contentContainerStyle={{ paddingTop: 25, paddingHorizontal: 20 }}
             data={tracks}
             renderItem={({item, index}) => {
               let imageView = item.track.album.images.length > 0 ? (
@@ -88,7 +91,7 @@ class TracksScreen extends Component<Props, State> {
                   style={[styles.trackImage, styles.missingImage]}
                 >
                   <Image
-                    style={{width: 40, height: 40}}
+                    style={{ width: 40, height: 40 }}
                     source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
                   />
                 </View>
@@ -108,6 +111,7 @@ class TracksScreen extends Component<Props, State> {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
+        <View style={{ height: 100, backgroundColor: '#191414' }}></View>
       </LoadingTracks>
     );
   }
@@ -135,18 +139,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     paddingVertical: 10,
-    paddingHorizontal: 60
+    paddingHorizontal: 50
+  },
+  playlistNameText: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    maxWidth: '100%'
   },
   bigPlayButton: {
     position: 'absolute',
-    top: 10,
+    top: 35,
     left: '100%',
     elevation: 4,
     zIndex: 4,
     backgroundColor: '#000000',
     justifyContent: 'center',
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 50,
     overflow: 'hidden'
   },

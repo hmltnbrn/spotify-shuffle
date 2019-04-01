@@ -19,9 +19,10 @@ import { DrawerActions } from 'react-navigation-drawer';
 import type { NavigationState } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import Header from './components/header/Header';
 import SplashScreen from './components/initial/SplashScreen.js';
 import SignInScreen from './components/initial/SignInScreen.js';
-import DrawerScreen from './components/drawer/DrawerScreen.js';
+import Drawer from './components/drawer/Drawer.js';
 import PlaylistsScreen from './components/playlists/PlaylistsScreen.js';
 import TracksScreen from './components/playlists/TracksScreen.js';
 import PlayerScreen from './components/player/PlayerScreen.js';
@@ -34,19 +35,7 @@ const DrawerAvailableStack = createStackNavigator({
   initialRouteName: 'Playlists',
   defaultNavigationOptions: ({ navigation }) => {
     return {
-      headerMode: 'screen',
-      headerTitle: 'Drawer',
-      headerLeft:
-      <TouchableOpacity onPress={() => { navigation.dispatch(DrawerActions.toggleDrawer()) } }>
-        <Icon name="menu" size={25} color={"#ffffff"} style={{paddingLeft: 15}}/>
-      </TouchableOpacity>,
-      headerStyle: {
-        backgroundColor: '#1db954',
-      },
-      headerTintColor: '#ffffff',
-      headerTitleStyle: {
-        fontWeight: 'normal',
-      }
+      header: navigation => <Header {...navigation} />
     };
   }
 });
@@ -55,7 +44,7 @@ const DrawerNavigator = createDrawerNavigator({
   DrawerAvailable: DrawerAvailableStack
 },{
   initialRouteName: 'DrawerAvailable',
-  contentComponent: DrawerScreen,
+  contentComponent: Drawer,
   drawerWidth: 300
 });
 

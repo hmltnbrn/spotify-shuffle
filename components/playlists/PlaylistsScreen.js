@@ -12,7 +12,8 @@ import {
   Image,
   FlatList,
   TextInput,
-  StatusBar
+  StatusBar,
+  Dimensions
 } from 'react-native';
 import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -31,6 +32,9 @@ type State = {
   text: string,
   focus: boolean
 };
+
+const { width, height } = Dimensions.get('window');
+const imageSize = width;
 
 class PlaylistsScreen extends Component<Props, State> {
   static navigationOptions = {
@@ -72,28 +76,8 @@ class PlaylistsScreen extends Component<Props, State> {
           barStyle="light-content"
           backgroundColor="#1db954"
         />
-        <View style={styles.searchBarContainer}>
-          <View style={[styles.searchBar, ... this.state.focus ? [styles.searchBarFocus] : []]}>
-            <Icon name="search" size={25} color={this.state.focus ? "#ffffff" : "#000000"} />
-            <TextInput
-              style={[styles.searchText, ... this.state.focus ? [styles.searchTextFocus] : []]}
-              onChangeText={text => this.handleChange(text)}
-              placeholder="Search your playlists"
-              placeholderTextColor={this.state.focus ? "rgba(255, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.4)"}
-              value={this.state.text}
-              selectionColor={"#000000"}
-              onSubmitEditing={this.handleSubmit}
-              onFocus={() => this.setState({ focus: true })}
-              onBlur={() => this.setState({ focus: false })}
-            />
-          </View>
-        </View>
         <FlatList
-          contentContainerStyle={{ paddingTop: 65, paddingBottom: 100 }}
-          columnWrapperStyle={{ justifyContent: 'space-around'}}
           data={playlists}
-          horizontal={false}
-          numColumns={2}
           renderItem={({item, index}) => {
             let imageView = item.images.length > 0 ? (
               <Image
@@ -103,7 +87,7 @@ class PlaylistsScreen extends Component<Props, State> {
               /> ) : (
               <View style={[styles.playlistImage, styles.missingImage]}>
                 <Image
-                  style={{width: 75, height: 75}}
+                  style={{width: imageSize/1.5, height: imageSize/1.5}}
                   source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
                 />
               </View>
@@ -112,7 +96,7 @@ class PlaylistsScreen extends Component<Props, State> {
               <TouchableHighlight onPress={() => this.goToTracks(item, index)} underlayColor="#fafafa">
                 <View style={styles.playlistContainer}>
                   {imageView}
-                  <View style={styles.playlistImageCard}>
+                  <View style={styles.playlistDescriptionCard}>
                     <Text style={styles.playlistText}>{item.name}</Text>
                     <Text style={[styles.playlistText, styles.playlistTextTracks]}>{`${item.tracks.total} ${item.tracks.total === 1 ? "track" : "tracks"}`}</Text>
                   </View>
@@ -122,6 +106,7 @@ class PlaylistsScreen extends Component<Props, State> {
           }}
           keyExtractor={(item, index) => index.toString()}
         />
+        <View style={{ height: 100, backgroundColor: '#191414' }}></View>
       </View>
     );
   }
@@ -136,73 +121,36 @@ export default connect(mapStateToProps, { getAllPlaylists, searchPlaylists })(Pl
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
-    position: 'relative'
-  },
-  searchBarContainer: {
-    height: 50,
-    backgroundColor: '#000000',
-    elevation: 5,
-    position: 'absolute',
-    top: 10,
-    right: 0,
-    width: '92%',
-    marginLeft: '4%',
-    marginRight: '4%',
-    borderRadius: 4,
-    zIndex: 5,
-    overflow: 'hidden'
-  },
-  searchBar: {
-    backgroundColor: "#ffffff",
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20
-  },
-  searchBarFocus: {
-    backgroundColor: '#1db954',
-  },
-  searchText: {
-    height: '100%',
-    paddingHorizontal: 20,
-    fontSize: 18,
-    flex: 2,
-    color: '#000000'
-  },
-  searchTextFocus: {
-    color: '#ffffff'
+    backgroundColor: '#fafafa'
   },
   playlistContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    margin: 10,
     elevation: 3,
-    width: 150,
+    width: imageSize,
     backgroundColor: '#000000',
-    borderRadius: 3,
     overflow: 'hidden'
   },
   playlistImage: {
-    width: 150,
-    height: 150,
+    width: imageSize,
+    height: imageSize,
   },
-  playlistImageCard: {
+  playlistDescriptionCard: {
     backgroundColor: '#ffffff',
-    width: 150
+    width: imageSize
   },
   missingImage: {
-    backgroundColor: '#1db954',
+    backgroundColor: '#191414',
     justifyContent: 'center',
     alignItems: 'center'
   },
   playlistText: {
-    fontSize: 17,
+    fontSize: 20,
     color: '#000000',
     margin: 6
   },
   playlistTextTracks: {
-    fontSize: 14
+    fontSize: 17
   }
 });
