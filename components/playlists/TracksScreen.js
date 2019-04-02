@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
   View,
   Image,
-  FlatList
+  FlatList,
+  ScrollView
 } from 'react-native';
 import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -54,6 +55,16 @@ class TracksScreen extends Component<Props, State> {
     });
   }
 
+  componentWillReceiveProps(nextProps: Props) {
+    if(nextProps.navigation.getParam('playlistId') !== this.props.navigation.getParam('playlistId')) {
+      this.props.getPlaylistTracks(nextProps.navigation.getParam('playlistId'), nextProps.navigation.getParam('playlistTracksTotal'));
+      this.setState({
+        playlistIndex: nextProps.navigation.getParam('playlistIndex'),
+        playlistName: nextProps.navigation.getParam('playlistName')
+      });
+    }
+  }
+
   playTrack = (track, index) => {
     console.log(track)
     this.props.playTrack(track, index, this.state.playlistName, this.props.tracks);
@@ -78,7 +89,7 @@ class TracksScreen extends Component<Props, State> {
             </View>
           </View>
           <FlatList
-            contentContainerStyle={{ paddingTop: 25, paddingHorizontal: 20 }}
+            contentContainerStyle={{ paddingTop: 25, paddingBottom: 100, paddingHorizontal: 20 }}
             data={tracks}
             renderItem={({item, index}) => {
               let imageView = item.track.album.images.length > 0 ? (
@@ -111,7 +122,6 @@ class TracksScreen extends Component<Props, State> {
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
-        <View style={{ height: 100, backgroundColor: '#191414' }}></View>
       </LoadingTracks>
     );
   }

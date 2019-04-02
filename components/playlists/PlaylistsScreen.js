@@ -13,7 +13,8 @@ import {
   FlatList,
   TextInput,
   StatusBar,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from 'react-native';
 import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -28,34 +29,16 @@ type Props = {
   navigation: NavigationScreenProp<NavigationState>
 };
 
-type State = {
-  text: string,
-  focus: boolean
-};
-
 const { width, height } = Dimensions.get('window');
 const imageSize = width;
 
-class PlaylistsScreen extends Component<Props, State> {
+class PlaylistsScreen extends Component<Props> {
   static navigationOptions = {
     headerTitle: 'Playlists'
   };
 
-  state = {
-    text: '',
-    focus: false
-  };
-
   componentDidMount() {
     this.props.getAllPlaylists();
-  }
-
-  handleChange = (text) => {
-    this.setState({ text: text }, this.handleSubmit);
-  }
-
-  handleSubmit = () => {
-    this.props.searchPlaylists(this.state.text);
   }
 
   goToTracks = (playlist, index) => {
@@ -77,6 +60,7 @@ class PlaylistsScreen extends Component<Props, State> {
           backgroundColor="#1db954"
         />
         <FlatList
+          contentContainerStyle={{ paddingBottom: 100 }}
           data={playlists}
           renderItem={({item, index}) => {
             let imageView = item.images.length > 0 ? (
@@ -106,7 +90,6 @@ class PlaylistsScreen extends Component<Props, State> {
           }}
           keyExtractor={(item, index) => index.toString()}
         />
-        <View style={{ height: 100, backgroundColor: '#191414' }}></View>
       </View>
     );
   }

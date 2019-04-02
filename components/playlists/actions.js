@@ -8,6 +8,7 @@ export const REQUEST_PLAYLIST_TRACKS = 'REQUEST_PLAYLIST_TRACKS';
 export const GET_PLAYLIST_TRACKS = 'GET_PLAYLIST_TRACKS';
 export const END_REQUEST_PLAYLIST_TRACKS = 'END_REQUEST_PLAYLIST_TRACKS';
 export const SEARCH_PLAYLISTS = 'SEARCH_PLAYLISTS';
+export const RESET_PLAYLISTS = 'RESET_PLAYLISTS';
 
 export const getAllPlaylists = () => async dispatch => {
   try {
@@ -58,5 +59,11 @@ export const searchPlaylists = (query) => async dispatch => {
   dispatch({
     type: SEARCH_PLAYLISTS,
     payload: query
+  });
+};
+
+export const resetPlaylists = () => async dispatch => {
+  dispatch({
+    type: RESET_PLAYLISTS
   });
 };

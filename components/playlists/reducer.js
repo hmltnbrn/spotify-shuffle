@@ -5,7 +5,8 @@ import {
   REQUEST_PLAYLIST_TRACKS,
   GET_PLAYLIST_TRACKS,
   END_REQUEST_PLAYLIST_TRACKS,
-  SEARCH_PLAYLISTS
+  SEARCH_PLAYLISTS,
+  RESET_PLAYLISTS
 } from './actions';
 
 const initialState = {
@@ -61,6 +62,12 @@ const playlistReducer = function(state = initialState, action) {
         ...state,
         error: "",
         playlists: state.lastRetrieved.filter(playlist => playlist.name.toLowerCase().includes(action.payload.toLowerCase()))
+      };
+    case RESET_PLAYLISTS:
+      return {
+        ...state,
+        error: "",
+        playlists: state.lastRetrieved
       };
     default:
       return state;

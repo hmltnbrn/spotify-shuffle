@@ -33,6 +33,7 @@ const DrawerAvailableStack = createStackNavigator({
   /* any other route where you want the drawer to remain available */
 },{
   initialRouteName: 'Playlists',
+  headerMode: "float",
   defaultNavigationOptions: ({ navigation }) => {
     return {
       header: navigation => <Header {...navigation} />

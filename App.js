@@ -10,8 +10,11 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import LoadingOverlay from './components/local/LoadingOverlay.js';
 import PlayerOverlay from './components/player/PlayerOverlay.js';
+import SearchOverlay from './components/header/SearchOverlay.js';
 
 import AppNavigation from './AppNavigation';
+
+import NavigationService from './services/NavigationService';
 
 const { store, persistor } = configureStore();
 
@@ -22,7 +25,13 @@ export default class App extends Component<{}> {
         <PersistGate loading={null} persistor={persistor}>
           <LoadingOverlay>
             <PlayerOverlay>
-              <AppNavigation />
+              <SearchOverlay>
+                <AppNavigation
+                  ref={navigatorRef => {
+                    NavigationService.setTopLevelNavigator(navigatorRef);
+                  }}
+                />
+              </SearchOverlay>
             </PlayerOverlay>
           </LoadingOverlay>
         </PersistGate>

@@ -1,7 +1,8 @@
-import { SET_TITLE } from './actions';
+import { SET_TITLE, TOGGLE_SEARCH } from './actions';
 
 const initialState = {
-  title: "Playlists"
+  title: "Playlists",
+  searchActive: false
 };
 
 const headerReducer = function(state = initialState, action) {
@@ -10,6 +11,11 @@ const headerReducer = function(state = initialState, action) {
       return {
         ...state,
         title: action.payload
+      };
+    case TOGGLE_SEARCH:
+      return {
+        ...state,
+        searchActive: action.payload
       };
     default:
       return state;
