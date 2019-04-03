@@ -6,6 +6,7 @@ export const SET_TRACK = 'SET_TRACK';
 export const TOGGLE_PLAYING = 'TOGGLE_PLAYING';
 export const SHUFFLE_TRACKS = 'SHUFFLE_TRACKS';
 export const SET_REPEAT = 'SET_REPEAT';
+export const RESET_PLAYER = 'RESET_PLAYER';
 
 export const playTrack = (track, trackIndex, queueName, queueTracks, position, playState) => async dispatch => {
   try {
@@ -52,5 +53,11 @@ export const setRepeat = (repeat) => async dispatch => {
   dispatch({
     type: SET_REPEAT,
     payload: repeat
+  });
+};
+
+export const resetPlayer = () => async dispatch => {
+  dispatch({
+    type: RESET_PLAYER
   });
 };

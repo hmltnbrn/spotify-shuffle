@@ -19,12 +19,14 @@ import CommIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Spotify from 'rn-spotify-sdk';
 import { connect } from 'react-redux';
 import { setTitle } from '../header/actions';
+import { resetPlayer } from '../player/actions';
 
 type Props = {
   navigation: NavigationScreenProp<NavigationState>,
   displayName: string,
   email: string,
-  setTitle: (newTitle: string) => void
+  setTitle: (newTitle: string) => void,
+  resetPlayer: () => void
 };
 
 class Drawer extends Component<Props> {
@@ -42,6 +44,7 @@ class Drawer extends Component<Props> {
 
   signOut() {
     Spotify.logout().finally(() => {
+      this.props.resetPlayer();
       this.props.navigation.navigate('Splash');
     });
   }
@@ -82,7 +85,7 @@ const mapStateToProps = (state) => ({
   email: state.user.email
 });
 
-export default connect(mapStateToProps, { setTitle })(Drawer);
+export default connect(mapStateToProps, { setTitle, resetPlayer })(Drawer);
 
 const styles = StyleSheet.create({
   container: {

@@ -52,11 +52,17 @@ class SignInScreen extends PureComponent<Props> {
           source={require('../../assets/images/Spotify_Icon_RGB_White.png')}
         />
         <Text style={styles.greeting}>
-          Welcome to this app. It is not affiliated with Spotify. Wink.
+          Welcome to Shufflefy
+        </Text>
+        <Text style={[styles.greeting, styles.requirement]}>
+          In order to use this app, you must have Spotify Premium
         </Text>
         <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
-          <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
+          <Text style={styles.spotifyLoginButtonText}>Sign in to your Spotify account</Text>
         </TouchableHighlight>
+        <View style={styles.disclaimer}>
+          <Text style={styles.disclaimerText}>This app is not affiliated with Spotify</Text>
+        </View>
       </View>
     );
   }
@@ -74,12 +80,13 @@ const styles = StyleSheet.create({
   },
   spotifyLoginButton: {
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#191414',
     overflow: 'hidden',
-    width: 200,
-    height: 40,
+    width: 175,
     margin: 20,
-    elevation: 3
+    elevation: 3,
+    padding: 10
   },
   spotifyLoginButtonText: {
     fontSize: 20,
@@ -91,6 +98,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
     color: '#ffffff',
-    marginVertical: 50
+    marginBottom: 25
+  },
+  requirement: {
+    fontSize: 20
+  },
+  disclaimer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0
+  },
+  disclaimerText: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#ffffff',
+    marginBottom: 15
   }
 });

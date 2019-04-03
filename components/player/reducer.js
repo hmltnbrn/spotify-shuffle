@@ -3,8 +3,7 @@ import {
   TOGGLE_PLAYING,
   SHUFFLE_TRACKS,
   SET_REPEAT,
-  SAVE_PLAYER_STATE,
-  GET_SAVED_PLAYER_STATE
+  RESET_PLAYER
 } from './actions';
 import shuffle from '../../helpers/shuffle';
 import * as storage from '../../helpers/storage';
@@ -50,6 +49,18 @@ const playerReducer = function(state = initialState, action) {
       return {
         ...state,
         repeat: action.payload
+      };
+    case RESET_PLAYER:
+      return {
+        ...state,
+        active: false,
+        playing: false,
+        repeat: false,
+        currentPosition: 0,
+        queueName: "",
+        queueTracks: [],
+        track: {},
+        trackIndex: 0
       };
     default:
       return state;

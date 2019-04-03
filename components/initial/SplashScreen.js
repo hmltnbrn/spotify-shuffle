@@ -98,7 +98,7 @@ class SplashScreen extends PureComponent<Props, State> {
     return (
       <View style={styles.container}>
         <Text style={styles.loadMessage}>
-          Not Real Spotify
+          Shufflefy
         </Text>
       </View>
     );
