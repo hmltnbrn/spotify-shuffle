@@ -2,14 +2,14 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import reducers from './reducers';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import FilesystemStorage from 'redux-persist-filesystem-storage'
 import { PlayerTransform } from './helpers/persist-transforms';
 
 const initialState = {};
 
 const persistConfig = {
   key: 'root',
-  storage: storage,
+  storage: FilesystemStorage,
   whitelist: ['player'],
   transforms: [PlayerTransform]
 };

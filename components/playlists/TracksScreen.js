@@ -89,7 +89,7 @@ class TracksScreen extends Component<Props, State> {
             </View>
           </View>
           <FlatList
-            contentContainerStyle={{ paddingTop: 25, paddingBottom: 100, paddingHorizontal: 20 }}
+            contentContainerStyle={{ paddingTop: 25, paddingBottom: 103, paddingHorizontal: 20 }}
             data={tracks}
             renderItem={({item, index}) => {
               let imageView = item.track.album.images.length > 0 ? (

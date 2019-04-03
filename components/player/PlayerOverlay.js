@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import Interactable from 'react-native-interactable';
+import ExtraDimensions from 'react-native-extra-dimensions-android';
 
 import PlayerScreen from './PlayerScreen';
 import MiniPlayerScreen from './MiniPlayerScreen';
@@ -29,7 +30,7 @@ type State = {
 
 const Screen = {
   width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height - StatusBar.currentHeight - 100
+  height: Dimensions.get('window').height - StatusBar.currentHeight - 100 + ExtraDimensions.getSoftMenuBarHeight() // This needs to be tested more (weird stuff going on here)
 };
 
 class PlayerOverlay extends Component<Props, State> {

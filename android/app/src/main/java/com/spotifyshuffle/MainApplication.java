@@ -3,6 +3,8 @@ package com.spotifyshuffle;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import ca.jaysoo.extradimensions.ExtraDimensionsPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.react.modules.storage.ReactDatabaseSupplier;
 import com.wix.interactable.Interactable;
@@ -35,6 +37,8 @@ public class MainApplication extends Application implements ReactApplication {
       ReactDatabaseSupplier.getInstance(getApplicationContext()).setMaximumSize(size);
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFetchBlobPackage(),
+            new ExtraDimensionsPackage(),
             new AsyncStoragePackage(),
             new Interactable(),
             new ReactSliderPackage(),

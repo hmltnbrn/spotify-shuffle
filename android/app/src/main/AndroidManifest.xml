@@ -2,6 +2,7 @@
   package="com.spotifyshuffle">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
 
     <application
       android:name=".MainApplication"
@@ -19,6 +20,7 @@
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
+     <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
         </intent-filter>
         <intent-filter android:label="spotify-app-authorize">
           <action android:name="android.intent.action.VIEW" />

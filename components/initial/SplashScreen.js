@@ -8,7 +8,8 @@ import {
   Alert,
   StyleSheet,
   Text,
-  View
+  View,
+  StatusBar
 } from 'react-native';
 import type { NavigationState, NavigationScreenProp } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
@@ -97,6 +98,10 @@ class SplashScreen extends PureComponent<Props, State> {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="#1db954"
+        />
         <Text style={styles.loadMessage}>
           Shufflefy
         </Text>

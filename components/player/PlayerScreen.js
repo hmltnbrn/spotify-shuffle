@@ -195,7 +195,7 @@ class PlayerScreen extends Component<Props, State> {
 
   onShuffle() {
     this.props.shuffleTracks();
-    this.setState({ toastVisible: true, toastMessage: "Playlist Shuffled" }, () => { this.hideToast(); });
+    this.setState({ toastVisible: true, toastMessage: "Queue Shuffled" }, () => { this.hideToast(); });
   }
 
   hideToast = () => {

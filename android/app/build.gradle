@@ -156,6 +156,8 @@ android {
 }
 
 dependencies {
+    implementation project(':rn-fetch-blob')
+    implementation project(':react-native-extra-dimensions-android')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-interactable')
     implementation project(':@react-native-community_slider')
