@@ -15,4 +15,4 @@ export const setUserDetails = () => async dispatch => {
   } catch(err) {
     console.error(err)
   }
-}
+};

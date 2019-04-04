@@ -17,6 +17,7 @@ import Config from 'react-native-config';
 import { connect } from 'react-redux';
 import { setUserDetails } from './actions';
 import { playTrack } from '../player/actions';
+import { resetPlayer } from '../player/actions';
 
 type Props = {
   queueName: string,
@@ -25,7 +26,8 @@ type Props = {
   currentPosition: number,
   navigation: NavigationScreenProp<NavigationState>,
   setUserDetails: () => void,
-  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void
+  playTrack: (track: Object, trackIndex: number, queueName?: ?string, queueTracks?: ?Array<any>, position?: ?number, playState?: ?boolean) => void,
+  resetPlayer: () => void
 };
 
 type State = {
@@ -65,6 +67,7 @@ class SplashScreen extends PureComponent<Props, State> {
         this.goToPlaylists();
       }
       else {
+        this.props.resetPlayer();
         this.goToSignIn();
       }
     }
@@ -78,6 +81,7 @@ class SplashScreen extends PureComponent<Props, State> {
         this.goToPlaylists();
       }
       else {
+        this.props.resetPlayer();
         this.goToSignIn();
       }
     }
@@ -117,7 +121,7 @@ const mapStateToProps = (state) => ({
   currentPosition: state.player.currentPosition
 });
 
-export default connect(mapStateToProps, { setUserDetails, playTrack })(SplashScreen);
+export default connect(mapStateToProps, { setUserDetails, playTrack, resetPlayer })(SplashScreen);
 
 const styles = StyleSheet.create({
   container: {

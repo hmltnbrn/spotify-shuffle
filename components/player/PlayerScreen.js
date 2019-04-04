@@ -142,7 +142,7 @@ class PlayerScreen extends Component<Props, State> {
     }
   }
 
-  async onBack() {
+  onBack() {
     if (this.state.currentPosition < 10 && this.props.trackIndex > 0) {
       clearInterval(this.intervalId);
       this.props.playTrack(this.props.queueTracks[this.props.trackIndex - 1].track, this.props.trackIndex - 1);
@@ -151,9 +151,9 @@ class PlayerScreen extends Component<Props, State> {
         sliding: false
       }, this.songTicker);
     }
-    else if(this.props.trackIndex > 0) {
+    else {
       clearInterval(this.intervalId);
-      await Spotify.seek(0);
+      this.props.playTrack(this.props.queueTracks[this.props.trackIndex].track, this.props.trackIndex);
       this.setState({
         currentPosition: 0,
       }, this.songTicker);

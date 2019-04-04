@@ -25,7 +25,7 @@ type Props = {
 
 class Controls extends Component<Props> {
   render () {
-    const { playing, repeatTrack } = this.props || true;
+    const { playing, repeatTrack } = this.props;
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.props.onRepeat()} >
